@@ -37,26 +37,26 @@
     "errors": 0,
     "recovery_audit_tests": 7,
     "source_jar_constructor_linkage": "passed",
-    "jar_sha256": "f4f681d94e50b644248aa5bb3fdfc56f19671bacffbb8bdcfa64a2c6610ed711",
+    "jar_sha256": "1f50c30a03950a01267fb47cd5a5ff7bc23ac84a75a2d2b3db85c0a3b4f3b22b",
     "manifest_fields_verified": {
-      "id": "CheatBreakerNeo-1.8.9",
-      "jar": "CheatBreakerNeo-1.8.9",
+      "id": "CheatBreaker 1.8.9",
+      "jar": "CheatBreaker 1.8.9",
       "clientVersion": "1.8.9"
     },
     "native_files_verified": 14,
     "game_visuals_verified": false,
     "fps_benchmark_performed": false,
-    "build_log": ".target/tile-entity-distance-build.log"
+    "build_log": ".target/client-deployment-build.log"
   },
   "deployment": {
-    "version": "CheatBreakerNeo-1.8.9",
-    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreakerNeo-1.8.9",
+    "version": "CheatBreaker 1.8.9",
+    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
     "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
-    "jar_sha256": "f4f681d94e50b644248aa5bb3fdfc56f19671bacffbb8bdcfa64a2c6610ed711",
+    "jar_sha256": "1f50c30a03950a01267fb47cd5a5ff7bc23ac84a75a2d2b3db85c0a3b4f3b22b",
     "jar_bytes": 124401094,
     "compiled_classes": 5145,
     "native_files_verified": 14,
-    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261015-124646",
-    "deployed_at": "2026-10-15T12:46:47.310088+08:00"
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261015-124909",
+    "deployed_at": "2026-10-15T12:49:10.313056+08:00"
   }
 }

@@ -1,4 +1,5 @@
-"""Deploy the recovered source build to the explicitly requested Neo version."""
+"""Deploy the recovered source build, backing up existing version artifacts."""
+import argparse
 import datetime
 import hashlib
 import json
@@ -7,7 +8,11 @@ import shutil
 import zipfile
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-VERSION = 'CheatBreakerNeo-1.8.9'
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--version', default='CheatBreakerNeo-1.8.9', help='Launcher version directory name')
+VERSION = parser.parse_args().version
+if not VERSION or VERSION in ('.', '..') or any(c in VERSION for c in '<>:"/\\|?*') or VERSION.endswith((' ', '.')):
+    parser.error('--version must be a single Windows directory name')
 DEST = pathlib.Path(r'C:\Users\hp\AppData\Roaming\.minecraft\versions') / VERSION
 JAR = ROOT / '.target/maven-source/CheatBreaker1.8.9.jar'
 assert JAR.is_file(), 'Build the source JAR first'
@@ -41,7 +46,9 @@ def copy_native_if_changed(source, destination):
 shutil.copytree(ROOT / 'natives', targets[2], dirs_exist_ok=True, copy_function=copy_native_if_changed)
 digest = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
 assert digest(targets[0]) == digest(JAR)
-assert json.loads(targets[1].read_text('utf-8'))['id'] == VERSION
+deployed_manifest = json.loads(targets[1].read_text('utf-8'))
+assert deployed_manifest['id'] == deployed_manifest['jar'] == VERSION
+assert deployed_manifest['clientVersion'] == '1.8.9'
 natives = list((ROOT / 'natives').rglob('*'))
 for native in natives:
     if native.is_file(): assert digest(native) == digest(targets[2] / native.relative_to(ROOT / 'natives'))
@@ -51,5 +58,6 @@ report = {'version': VERSION, 'directory': str(DEST), 'source_jar': str(JAR),
           'native_files_verified': sum(p.is_file() for p in natives),
           'backup': str(backup) if backup.exists() else None,
           'deployed_at': datetime.datetime.now().astimezone().isoformat()}
-(ROOT / 'recovery/neo-deployment.json').write_text(json.dumps(report, indent=2), 'utf-8')
+report_name = 'neo-deployment.json' if VERSION == 'CheatBreakerNeo-1.8.9' else 'client-deployment.json'
+(ROOT / 'recovery' / report_name).write_text(json.dumps(report, indent=2), 'utf-8')
 print(json.dumps(report, indent=2))
