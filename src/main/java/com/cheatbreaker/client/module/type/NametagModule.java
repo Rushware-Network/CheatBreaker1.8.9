@@ -2,8 +2,14 @@ package com.cheatbreaker.client.module.type;
 
 import com.cheatbreaker.client.config.Setting;
 import com.cheatbreaker.client.module.AbstractModule;
+import com.cheatbreaker.client.util.UuidParser;
+import com.cheatbreaker.client.util.player.PlayerNametagStyle;
+import java.util.UUID;
+import java.util.regex.Pattern;
+import net.minecraft.util.EnumChatFormatting;
 
 public class NametagModule extends AbstractModule {
+   private final PlayerNametagStyle localLogoStyle = new PlayerNametagStyle("", "", new int[]{0xFFFFFF, 0xFFFFFF});
    public Setting recoveredField2911;
    public String[] recoveredField2912 = new String[]{
       " ", "[", "]", "!", "=", "-", "@", "#", "$", "%", "^", "&", "*", "(", ")", "~", "`", "|", ";", ":", "'", "\"", ",", "<", ">", ".", "?", "/"
@@ -25,7 +31,7 @@ public class NametagModule extends AbstractModule {
       this.recoveredField2919 = new Setting(this, "label").setValue("General Options");
       this.recoveredField2920 = new Setting(this, "Show Background").setValue(true);
       this.recoveredField2918 = new Setting(this, "Text Shadow").setValue(false);
-      this.recoveredField2922 = new Setting(this, "Show CheatBreaker Logo").setValue(true);
+      this.recoveredField2922 = new Setting(this, "Show CheatBreaker Logo", "Show the logo for yourself and recognized CheatBreaker players.").setValue(true);
       this.recoveredField2921 = new Setting(this, "Show Sub Icons").setValue(false).method_08894(this.recoveredField2922::method_08908);
       this.recoveredField2915 = new Setting(this, "Shown own Nametag").setValue(false);
       this.recoveredField2916 = new Setting(this, "Show Nametags when GUI is hidden").setValue(false);
@@ -50,5 +56,22 @@ public class NametagModule extends AbstractModule {
       }
 
       return true;
+   }
+
+   public PlayerNametagStyle getLogoStyle(UUID playerId, String playerName, String label, boolean localPlayer,
+      String localAlias, UuidParser styles) {
+      if (!this.isEnabled() || !this.recoveredField2922.method_08908()
+         || !(containsPlayerName(label, playerName) || localPlayer && containsPlayerName(label, localAlias))) {
+         return null;
+      }
+      // Only our own client is known locally; remote players require UUID-based service data.
+      PlayerNametagStyle style = styles == null ? null : styles.method_21030().get(playerId);
+      return style != null ? style : localPlayer ? this.localLogoStyle : null;
+   }
+
+   private static boolean containsPlayerName(String label, String name) {
+      if (label == null || name == null || name.isEmpty()) return false;
+      String plain = EnumChatFormatting.getTextWithoutFormattingCodes(label);
+      return Pattern.compile("(?<![A-Za-z0-9_])" + Pattern.quote(name) + "(?![A-Za-z0-9_])").matcher(plain).find();
    }
 }

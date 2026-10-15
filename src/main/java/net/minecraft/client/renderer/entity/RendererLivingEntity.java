@@ -4,6 +4,7 @@ import com.cheatbreaker.client.CheatBreaker;
 import com.cheatbreaker.client.module.type.DamageTintModule;
 import com.cheatbreaker.client.module.type.NametagModule;
 import com.cheatbreaker.client.module.type.NickHiderModule;
+import com.cheatbreaker.client.util.player.PlayerNametagStyle;
 import com.google.common.collect.Lists;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
@@ -463,7 +464,9 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                   GlStateManager.enableBlend();
                   GlStateManager.disableTexture2D();
                   GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-                  int var15 = var14.getStringWidth(var12) / 2;
+                  PlayerNametagStyle logoStyle = this.getNametagLogoStyle(var1, var12, var8);
+                  int logoPadding = logoStyle != null ? 7 : 0;
+                  int var15 = var14.getStringWidth(var12) / 2 + logoPadding;
                   Tessellator var16 = Tessellator.getInstance();
                   WorldRenderer var17 = var16.getWorldRenderer();
                   var17.begin(7, DefaultVertexFormats.POSITION_COLOR);
@@ -474,7 +477,7 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                   var16.draw();
                   GlStateManager.enableTexture2D();
                   GlStateManager.depthMask(true);
-                  var14.drawString(var12, -var14.getStringWidth(var12) / 2, 0.0F, 553648127, var8.isEnabled() && var8.recoveredField2918.method_08908());
+                  this.method_08010(var15, 0, logoPadding, var14, var12, logoStyle, var8, logoStyle != null, 32);
                   GlStateManager.enableLighting();
                   GlStateManager.disableBlend();
                   GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

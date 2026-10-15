@@ -1,0 +1,41 @@
+{
+  "feature": "Nametag CheatBreaker logo",
+  "root_causes": [
+    "The original renderer requires UUID, username and color data supplied by AssetsWebSocket cosmetics packets; enabling the setting alone cannot create that data, including for the local player.",
+    "The sneaking nametag path renders text directly and never draws the logo."
+  ],
+  "changes": [
+    "Use a local white two-layer logo for the current player when service data is absent, without inserting a fabricated entry into the shared identity map.",
+    "Keep remote logos restricted to recognized player UUIDs and preserve supplied colors and subicons.",
+    "Match the entity username after removing formatting codes; allow the local Nick Hider alias, and exclude partial usernames and unrelated score labels.",
+    "Share the text and logo drawing routine with sneaking nametags and reserve space for the logo in both paths.",
+    "Size the normal nametag background using the displayed name, including Nick Hider substitution."
+  ],
+  "usage": "Enable Nametag and Show CheatBreaker Logo. To view your own label, also enable Shown own Nametag and use third-person view. Remote player recognition still requires service data.",
+  "validation": {
+    "full_build": "mvnw.cmd clean package -Dmaven.repo.local=C:\\Users\\hp\\.m2\\repository: BUILD SUCCESS; Maven exit code 0",
+    "build_directory": ".target/maven-source",
+    "java_tests": 101,
+    "nametag_logo_tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "recovery_audit_tests": 7,
+    "source_jar_constructor_linkage": "passed",
+    "build_log": ".target/nametag-logo-build.log",
+    "package_log": ".target/nametag-logo-package.log",
+    "deploy_log": ".target/nametag-logo-deploy.log",
+    "jar_sha256_verified": true,
+    "manifest_fields_verified": true,
+    "native_files_verified": 14,
+    "game_visuals_verified": false,
+    "remote_service_availability_verified": false
+  },
+  "deployment": {
+    "version": "CheatBreaker 1.8.9",
+    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
+    "jar_sha256": "6f0d5ca211588cf73b538c87150a677d4a3a7e42795cc34a1f587cb5b7735793",
+    "backup": ".target/deployment-backups/20261015-202439",
+    "deployed_at": "2026-10-15T20:24:39.980478+08:00"
+  }
+}

@@ -5,7 +5,6 @@ import com.cheatbreaker.client.module.type.NametagModule;
 import com.cheatbreaker.client.module.type.NickHiderModule;
 import com.cheatbreaker.client.module.type.TextureOptionsModule;
 import com.cheatbreaker.client.ui.util.RenderUtil;
-import com.cheatbreaker.client.util.UuidParser;
 import java.awt.Color;
 import java.util.regex.Pattern;
 import net.minecraft.block.Block;
@@ -316,13 +315,9 @@ public abstract class Render<T extends Entity> implements IEntityRenderer {
 
    public void renderLivingLabel(T var1, String var2, double var3, double var5, double var7, int var9) {
       NametagModule var10 = CheatBreaker.getInstance().getModuleManager().recoveredField1713;
-      UuidParser var11 = CheatBreaker.getInstance().method_19771();
       boolean var12 = var10.isEnabled();
-      boolean var13 = var12
-         && (Boolean)var10.recoveredField2922.getValue()
-         && (var10.method_21275(var2) || var11.method_21032(var1.aK().toString(), false))
-         && var11.method_21032(var2, true);
-      PlayerNametagStyle var14 = var11.method_21031(var1.aK().toString());
+      PlayerNametagStyle var14 = this.getNametagLogoStyle(var1, var2, var10);
+      boolean var13 = var14 != null;
       if (var12 && var10.recoveredField2915.method_08908() || !var1.equals(Minecraft.getMinecraft().thePlayer)) {
          double var15 = var1.h(this.b.livingPlayer);
          if (var15 <= var9 * var9) {
@@ -358,8 +353,8 @@ public abstract class Render<T extends Entity> implements IEntityRenderer {
                var25 = -10;
             }
 
-            int var26 = var17.getStringWidth(var2) / 2;
-            int var27 = var13 ? (var2.contains(" ") ? 8 : 7) : 0;
+            int var26 = var17.getStringWidth(var23) / 2;
+            int var27 = var13 ? 7 : 0;
             var26 += var27;
             GlStateManager.disableTexture2D();
             if (!var12 || (Boolean)var10.recoveredField2920.getValue()) {
@@ -394,6 +389,18 @@ public abstract class Render<T extends Entity> implements IEntityRenderer {
             GlStateManager.popMatrix();
          }
       }
+   }
+
+   protected PlayerNametagStyle getNametagLogoStyle(T entity, String label, NametagModule module) {
+      if (!(entity instanceof EntityPlayer)) return null;
+      Minecraft minecraft = Minecraft.getMinecraft();
+      boolean localPlayer = entity == minecraft.thePlayer;
+      NickHiderModule nick = CheatBreaker.getInstance().getModuleManager().recoveredField1705;
+      String alias = localPlayer && nick.isEnabled() && nick.recoveredField850.method_08908()
+         ? nick.recoveredField849.method_08874() : null;
+      if (alias != null && alias.equals(minecraft.getSession().getUsername())) alias = "You";
+      return module.getLogoStyle(entity.aK(), entity.z_(), label, localPlayer, alias,
+         CheatBreaker.getInstance().method_19771());
    }
 
    public void method_08010(
