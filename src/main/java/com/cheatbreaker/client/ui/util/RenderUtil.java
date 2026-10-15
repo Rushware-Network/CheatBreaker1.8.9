@@ -7,6 +7,8 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.texture.ITextureObject;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -91,6 +93,28 @@ public class RenderUtil {
       GL11.glVertex2d(var1 + var3, var2);
       GL11.glEnd();
       GL11.glDisable(3042);
+   }
+
+   public static void drawNametagIcon(ResourceLocation resource, float x, float y, float width, float height) {
+      TextureManager textures = Minecraft.getMinecraft().getTextureManager();
+      textures.bindTexture(resource);
+      ITextureObject texture = textures.getTexture(resource);
+      boolean depthMask = GlStateManager.depthState.maskEnabled;
+      texture.setBlurMipmap(true, false);
+      GlStateManager.depthMask(false);
+      try {
+         Tessellator tessellator = Tessellator.getInstance();
+         WorldRenderer renderer = tessellator.getWorldRenderer();
+         renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+         renderer.pos(x, y, 0.0).tex(0.0, 0.0).endVertex();
+         renderer.pos(x, y + height, 0.0).tex(0.0, 1.0).endVertex();
+         renderer.pos(x + width, y + height, 0.0).tex(1.0, 1.0).endVertex();
+         renderer.pos(x + width, y, 0.0).tex(1.0, 0.0).endVertex();
+         tessellator.draw();
+      } finally {
+         GlStateManager.depthMask(depthMask);
+         texture.restoreLastBlurMipmap();
+      }
    }
 
    public static void method_22063(ResourceLocation var0, float var1, float var2, float var3) {

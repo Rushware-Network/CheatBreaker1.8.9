@@ -2,7 +2,10 @@
   "feature": "Nametag CheatBreaker logo",
   "root_causes": [
     "The original renderer requires UUID, username and color data supplied by AssetsWebSocket cosmetics packets; enabling the setting alone cannot create that data, including for the local player.",
-    "The sneaking nametag path renders text directly and never draws the logo."
+    "The sneaking nametag path renders text directly and never draws the logo.",
+    "The shared GUI texture helper drew the nametag shadow and foreground at the same depth while depth writes were enabled in the visible pass, allowing overlapping fragments to compete as the view moved.",
+    "That helper disabled blending with raw GL calls, leaving GlStateManager's cached blend state inconsistent for subsequent nametag draws. Raw logo color calls also bypassed its color cache.",
+    "The 88x100 logo texture used nearest-neighbor sampling on a 13x7 world-space quad, causing abrupt texel changes during subpixel camera movement."
   ],
   "changes": [
     "Use a local logo identity fallback for the current player when service data is absent, without inserting a fabricated entry into the shared identity map.",
@@ -10,7 +13,9 @@
     "Match the entity username after removing formatting codes; allow the local Nick Hider alias, and exclude partial usernames and unrelated score labels.",
     "Share the text and logo drawing routine with sneaking nametags and reserve space for the logo in both paths.",
     "Size the normal nametag background using the displayed name, including Nick Hider substitution.",
-    "Nametag and Tablist both reference PlayerNametagStyle.LOGO_TEXTURE (client/logo_white.png); normal and sneaking nametags retain their opacity, shadow and subicon settings."
+    "Nametag and Tablist both reference PlayerNametagStyle.LOGO_TEXTURE (client/logo_white.png); normal and sneaking nametags retain their opacity, shadow and subicon settings.",
+    "Use a dedicated Tessellator nametag icon renderer for logos, shadows and subicons. Temporarily disable depth writes while retaining the caller's depth test and blend state, then restore the depth mask in finally.",
+    "Use GlStateManager for nametag icon colors and temporarily enable linear texture filtering, restoring the previous texture filters after drawing."
   ],
   "usage": "Enable Nametag and Show CheatBreaker Logo. To view your own label, also enable Shown own Nametag and use third-person view. Remote player recognition still requires service data.",
   "validation": {
@@ -23,9 +28,9 @@
     "skipped": 0,
     "recovery_audit_tests": 7,
     "source_jar_constructor_linkage": "passed",
-    "build_log": ".target/nametag-unified-logo-build.log",
-    "package_log": ".target/nametag-unified-logo-package.log",
-    "deploy_log": ".target/nametag-unified-logo-deploy.log",
+    "build_log": ".target/nametag-icon-stability-build.log",
+    "package_log": ".target/nametag-icon-stability-package.log",
+    "deploy_log": ".target/nametag-icon-stability-deploy.log",
     "jar_sha256_verified": true,
     "manifest_fields_verified": true,
     "native_files_verified": 14,
@@ -36,12 +41,12 @@
     "version": "CheatBreaker 1.8.9",
     "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
     "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
-    "jar_sha256": "8baccfeee1e1ea048855b69ba06e8d5241b3f41d829d9d2f622d6e464b561563",
-    "jar_bytes": 124434010,
+    "jar_sha256": "bdcc403a0b9bd99a2e9a03b6db42c3a64c624a7f4a057ae5bf6056054c1d45af",
+    "jar_bytes": 124434520,
     "compiled_classes": 5146,
     "native_files_verified": 14,
-    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261015-203642",
-    "deployed_at": "2026-10-15T20:36:43.418040+08:00"
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261015-210954",
+    "deployed_at": "2026-10-15T21:09:55.384712+08:00"
   },
   "shared_logo": {
     "resource": "client/logo_white.png",
