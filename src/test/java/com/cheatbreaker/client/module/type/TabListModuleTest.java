@@ -77,6 +77,18 @@ public class TabListModuleTest extends TestCase {
       assertTrue(uneven.width <= 200);
    }
 
+   public void testPreviewUsesCurrentAccountWithoutSortingItAway() {
+      com.mojang.authlib.GameProfile own = new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "MyPlayerId");
+      java.util.List<net.minecraft.client.network.NetworkPlayerInfo> players = GuiPlayerTabOverlay.createPreviewPlayers(own);
+      assertEquals(4, players.size());
+      assertSame(own, players.get(0).getGameProfile());
+      GuiPlayerTabOverlay overlay = new GuiPlayerTabOverlay(null, null);
+      assertEquals("MyPlayerId", net.minecraft.util.EnumChatFormatting.getTextWithoutFormattingCodes(overlay.getPlayerName(players.get(0))));
+      assertEquals("Steve", net.minecraft.util.EnumChatFormatting.getTextWithoutFormattingCodes(overlay.getPlayerName(players.get(1))));
+      assertEquals(15, players.get(0).method_13010());
+      assertEquals(250, players.get(3).method_13010());
+   }
+
    public void testEmptyAndNarrowLayoutsHaveNoNegativeSizes() {
       TabListLayout empty = new TabListLayout(0, 0, 0);
       assertEquals(0, empty.rows);

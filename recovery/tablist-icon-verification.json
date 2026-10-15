@@ -1,53 +1,44 @@
 {
   "feature": "Tablist module preview icon",
-  "implementation": "Native Minecraft FontRenderer and Gui rectangles; no raster asset",
-  "rows": [
-    {
-      "name": "Classskid",
-      "ping": 15,
-      "color": "green"
-    },
-    {
-      "name": "Steve",
-      "ping": 75,
-      "color": "green"
-    },
-    {
-      "name": "Alex",
-      "ping": 155,
-      "color": "yellow"
-    },
-    {
-      "name": "Notch",
-      "ping": 250,
-      "color": "yellow"
-    }
+  "implementation": "GuiPlayerTabOverlay.renderPlayerlistPreview uses renderVanillaPlayerlist, shared with the vanilla live Tab renderer",
+  "first_row": "Current Minecraft session GameProfile name and UUID; remains first; no Nick Hider substitution",
+  "remaining_rows": [
+    "Steve",
+    "Alex",
+    "Notch"
   ],
-  "layout": "Four compact rows; names left aligned, ping right aligned; centered above existing module title",
-  "card_background": "Existing native enabled/disabled theme retained",
-  "live_tablist_changed": false,
+  "sample_pings": [
+    15,
+    75,
+    155,
+    250
+  ],
+  "style": "Vanilla panel background, row background, 9-pixel row spacing, Minecraft text shadows; numeric Ping retained for reference image",
+  "layout": "Centered above module title; scales to fit long account names",
+  "isolation": "Independent preview player entries; no connection required; no mutation of live players, header/footer, scoreboard, tab visibility or module enabled state",
   "validation": {
     "full_build": "mvnw.cmd clean package: BUILD SUCCESS",
-    "java_tests": 95,
+    "java_tests": 96,
     "failures": 0,
     "errors": 0,
+    "preview_account_test": "passed: current profile stays first, expected name and sample ping values",
     "recovery_audit_tests": 7,
     "source_jar_constructor_linkage": "passed",
     "manifest_fields_verified": true,
     "jar_sha256_verified_by_deploy": true,
     "native_files_verified": 14,
-    "build_log": ".target/tablist-icon-build.log",
+    "build_log": ".target/tablist-native-icon-build.log",
     "game_visuals_verified": false
   },
   "deployment": {
     "version": "CheatBreaker 1.8.9",
     "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
     "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
-    "jar_sha256": "db3371f0a21a2ee4a8f11f651cfd2bb127e5517f2f4602654736c306c9312dbb",
-    "jar_bytes": 124432002,
+    "jar_sha256": "ce4a90fde8f230a5c480251dfea79a59986acf3a2ab62f0998c6db112cb7721c",
+    "jar_bytes": 124432933,
     "compiled_classes": 5146,
     "native_files_verified": 14,
-    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261015-141014",
-    "deployed_at": "2026-10-15T14:10:14.616710+08:00"
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261015-141508",
+    "deployed_at": "2026-10-15T14:15:09.159366+08:00"
   }
 }

@@ -43,6 +43,12 @@ public class GuiPlayerTabOverlay extends Gui {
       }
       NetHandlerPlayClient var4 = this.mc.thePlayer.sendQueue;
       List var5 = field_175252_a.sortedCopy(var4.getPlayerInfoMap());
+      boolean heads = this.mc.isIntegratedServerRunning() || this.mc.getNetHandler().getNetworkManager().getIsencrypted();
+      this.renderVanillaPlayerlist(var1, var2, var3, var5, heads, this.header, this.footer, false);
+   }
+
+   private void renderVanillaPlayerlist(int var1, Scoreboard var2, ScoreObjective var3, List<NetworkPlayerInfo> var5,
+         boolean var11, IChatComponent header, IChatComponent footer, boolean preview) {
       int var6 = 0;
       int var7 = 0;
 
@@ -64,7 +70,6 @@ public class GuiPlayerTabOverlay extends Gui {
          var38++;
       }
 
-      boolean var11 = this.mc.isIntegratedServerRunning() || this.mc.getNetHandler().getNetworkManager().getIsencrypted();
       int var12;
       if (var3 != null) {
          if (var3.getRenderType() == IScoreObjectiveCriteria.EnumRenderType.HEARTS) {
@@ -76,22 +81,23 @@ public class GuiPlayerTabOverlay extends Gui {
          var12 = 0;
       }
 
-      int var13 = Math.min(var38 * ((var11 ? 9 : 0) + var6 + var12 + 13), var1 - 50) / var38;
+      int pingWidth = preview ? this.mc.fontRendererObj.getStringWidth("250") + 4 : 13;
+      int var13 = Math.min(var38 * ((var11 ? 9 : 0) + var6 + var12 + pingWidth), var1 - 50) / var38;
       int var14 = var1 / 2 - (var13 * var38 + (var38 - 1) * 5) / 2;
       int var15 = 10;
       int var16 = var13 * var38 + (var38 - 1) * 5;
       List var17 = null;
       List var18 = null;
-      if (this.header != null) {
-         var17 = this.mc.fontRendererObj.listFormattedStringToWidth(this.header.getFormattedText(), var1 - 50);
+      if (header != null) {
+         var17 = this.mc.fontRendererObj.listFormattedStringToWidth(header.getFormattedText(), var1 - 50);
 
          for (String var20 : (Iterable<String>)(Iterable<?>)(var17)) {
             var16 = Math.max(var16, this.mc.fontRendererObj.getStringWidth(var20));
          }
       }
 
-      if (this.footer != null) {
-         var18 = this.mc.fontRendererObj.listFormattedStringToWidth(this.footer.getFormattedText(), var1 - 50);
+      if (footer != null) {
+         var18 = this.mc.fontRendererObj.listFormattedStringToWidth(footer.getFormattedText(), var1 - 50);
 
          for (String var44 : (Iterable<String>)(Iterable<?>)(var18)) {
             var16 = Math.max(var16, this.mc.fontRendererObj.getStringWidth(var44));
@@ -126,7 +132,7 @@ public class GuiPlayerTabOverlay extends Gui {
             NetworkPlayerInfo var24 = (NetworkPlayerInfo)var5.get(var42);
             String var25 = this.getPlayerName(var24);
             NickHiderModule var26 = CheatBreaker.getInstance().getModuleManager().recoveredField1705;
-            if (var26.isEnabled() && var26.recoveredField850.method_08908()) {
+            if (!preview && var26.isEnabled() && var26.recoveredField850.method_08908()) {
                if (!var26.recoveredField849.method_08874().equals(Minecraft.getMinecraft().getSession().getUsername())) {
                   var25 = var25.replaceAll(Minecraft.getMinecraft().getSession().getUsername(), var26.recoveredField849.method_08874());
                } else {
@@ -168,7 +174,14 @@ public class GuiPlayerTabOverlay extends Gui {
                }
             }
 
-            this.drawPing(var13, var22 - (var11 ? 9 : 0), var23, var24);
+            if (preview) {
+               String ping = Integer.toString(var24.method_13010());
+               this.mc.fontRendererObj.drawStringWithShadow(ping,
+                  var22 + var13 - this.mc.fontRendererObj.getStringWidth(ping) - 1, var23,
+                  var24.method_13010() < 150 ? 0xFF55FF55 : 0xFFFFFF55);
+            } else {
+               this.drawPing(var13, var22 - (var11 ? 9 : 0), var23, var24);
+            }
          }
       }
 
@@ -181,6 +194,43 @@ public class GuiPlayerTabOverlay extends Gui {
             this.mc.fontRendererObj.drawStringWithShadow(var47, var1 / 2 - var49 / 2, var15, -1);
             var15 += this.mc.fontRendererObj.FONT_HEIGHT;
          }
+      }
+   }
+
+   public static List<NetworkPlayerInfo> createPreviewPlayers(GameProfile ownProfile) {
+      List<NetworkPlayerInfo> players = new java.util.ArrayList<>();
+      String[] names = {ownProfile.getName(), "Steve", "Alex", "Notch"};
+      int[] pings = {15, 75, 155, 250};
+      for (int row = 0; row < names.length; row++) {
+         GameProfile profile = row == 0 ? ownProfile : new GameProfile(new java.util.UUID(0, row), names[row]);
+         NetworkPlayerInfo player = new NetworkPlayerInfo(profile);
+         player.setDisplayName(new net.minecraft.util.ChatComponentText(names[row]));
+         player.gameType = WorldSettings.GameType.SURVIVAL;
+         player.setResponseTime(pings[row]);
+         players.add(player);
+      }
+      return players;
+   }
+
+   /** Render the module-card sample through the same row renderer as vanilla Tab. */
+   public void renderPlayerlistPreview(float centerX, float centerY, float maxWidth, float maxHeight) {
+      List<NetworkPlayerInfo> players = createPreviewPlayers(this.mc.getSession().getProfile());
+      int nameWidth = 0;
+      for (NetworkPlayerInfo player : players) {
+         nameWidth = Math.max(nameWidth, this.mc.fontRendererObj.getStringWidth(this.getPlayerName(player)));
+      }
+      int contentWidth = nameWidth + this.mc.fontRendererObj.getStringWidth("250") + 4;
+      int logicalWidth = contentWidth + 50;
+      float scale = Math.min(1.0F, Math.min(maxWidth / (contentWidth + 2.0F), maxHeight / 37.0F));
+      GlStateManager.pushMatrix();
+      try {
+         GlStateManager.translate(centerX, centerY, 0);
+         GlStateManager.scale(scale, scale, 1);
+         GlStateManager.translate(-logicalWidth / 2.0F, -27.5F, 0);
+         this.renderVanillaPlayerlist(logicalWidth, null, null, players, false, null, null, true);
+      } finally {
+         GlStateManager.popMatrix();
+         GlStateManager.color(1, 1, 1, 1);
       }
    }
 

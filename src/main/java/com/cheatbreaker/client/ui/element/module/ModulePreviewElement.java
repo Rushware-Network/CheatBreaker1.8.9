@@ -14,7 +14,6 @@ import java.util.Objects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
@@ -23,8 +22,6 @@ import com.cheatbreaker.client.ui.module.ModulePlacementGui;
 import com.cheatbreaker.client.ui.util.GuiThemeColors;
 
 public class ModulePreviewElement extends AbstractModulesGuiElement {
-   private static final String[] TABLIST_PREVIEW_NAMES = {"Classskid", "Steve", "Alex", "Notch"};
-   private static final String[] TABLIST_PREVIEW_PINGS = {"15", "75", "155", "250"};
    public AbstractScrollableElement recoveredField3795;
    public ModulesGuiButtonElement recoveredField3796;
    public boolean recoveredField3797 = CheatBreaker.getInstance().getGlobalSettings().recoveredField504.getValue().equals("Compact");
@@ -384,27 +381,11 @@ public class ModulePreviewElement extends AbstractModulesGuiElement {
    }
 
    private void drawTabListPreview() {
-      FontRenderer font = Minecraft.getMinecraft().fontRendererObj;
-      int nameWidth = 0;
-      int pingWidth = 0;
-      for (int row = 0; row < TABLIST_PREVIEW_NAMES.length; row++) {
-         nameWidth = Math.max(nameWidth, font.getStringWidth(TABLIST_PREVIEW_NAMES[row]));
-         pingWidth = Math.max(pingWidth, font.getStringWidth(TABLIST_PREVIEW_PINGS[row]));
-      }
-      int rowHeight = font.FONT_HEIGHT;
-      int previewWidth = nameWidth + pingWidth + 12;
-      int previewHeight = rowHeight * TABLIST_PREVIEW_NAMES.length;
-      float left = this.x + (this.width - previewWidth) / 2.0F;
-      float top = this.y + this.height / 2.0F - 26 - previewHeight / 2.0F;
-      Gui.drawRect(left - 1, top - 1, left + previewWidth + 1, top + previewHeight + 1, 0x80000000);
-      for (int row = 0; row < TABLIST_PREVIEW_NAMES.length; row++) {
-         float rowY = top + row * rowHeight;
-         Gui.drawRect(left, rowY, left + previewWidth, rowY + rowHeight - 1, 0x20FFFFFF);
-         font.drawStringWithShadow(TABLIST_PREVIEW_NAMES[row], left + 1, rowY, 0xFFFFFFFF);
-         font.drawStringWithShadow(TABLIST_PREVIEW_PINGS[row],
-            left + previewWidth - font.getStringWidth(TABLIST_PREVIEW_PINGS[row]) - 1, rowY,
-            row < 2 ? 0xFF55FF55 : 0xFFFFFF55);
-      }
+      Minecraft client = Minecraft.getMinecraft();
+      client.ingameGUI.overlayPlayerList.renderPlayerlistPreview(
+         this.x + this.width / 2.0F, this.y + this.height / 2.0F - 26,
+         Math.max(1, this.width - 12), 37
+      );
    }
 
    public void method_27154() {
