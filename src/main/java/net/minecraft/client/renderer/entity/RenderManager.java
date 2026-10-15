@@ -148,6 +148,12 @@ public class RenderManager {
    }
 
    public void renderDebugBoundingBox(Entity var1, double var2, double var4, double var6, float var8, float var9) {
+      if (var1 instanceof EntityArrow) {
+         Render renderer = this.getEntityRenderObject(var1);
+         if (renderer instanceof RenderArrow && ((RenderArrow)renderer).method_01981((EntityArrow)var1)) {
+            return;
+         }
+      }
       HitboxesModule var10 = CheatBreaker.getInstance().getModuleManager().recoveredField1703;
       boolean var11 = var10.recoveredField331.recoveredField3276.method_08908();
       boolean var12 = var1 == Minecraft.getMinecraft().thePlayer;
@@ -432,6 +438,11 @@ public class RenderManager {
       try {
          var11 = this.getEntityRenderObject(var1);
          if (var11 != null && this.renderEngine != null) {
+            // Hidden arrows must skip post-render effects and every Hitboxes option too.
+            if (var11 instanceof RenderArrow && var1 instanceof EntityArrow
+               && ((RenderArrow)var11).method_01981((EntityArrow)var1)) {
+               return true;
+            }
             try {
                if (var11 instanceof RendererLivingEntity) {
                   ((RendererLivingEntity)var11).setRenderOutlines(this.recoveredField1001);

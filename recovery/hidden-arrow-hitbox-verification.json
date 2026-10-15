@@ -1,0 +1,40 @@
+{
+  "change": "Skip hidden arrow entities, post-render effects and all Hitboxes settings using the existing RenderArrow visibility predicate; guard direct hitbox rendering too.",
+  "scope": [
+    "Hide Grounded Arrows",
+    "Hide Moving Arrows"
+  ],
+  "stuck_arrows": "Hide Stuck Arrows controls arrows embedded in living entity models; those have no separate entity hitboxes.",
+  "build_command": "mvnw.cmd clean package",
+  "build_directory": ".target/maven-source",
+  "java_tests": {
+    "run": 87,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "regression_tests": "HiddenArrowHitboxTest: 3 passed; grounded arrows, moving arrows on all axes, disabled toggles and stationary/grounded exclusions.",
+  "recovery_audit": {
+    "run": 7,
+    "passed": true
+  },
+  "source_jar_constructor_linkage_audit": "passed",
+  "deployment": {
+    "version": "CheatBreakerNeo-1.8.9",
+    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreakerNeo-1.8.9",
+    "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
+    "jar_sha256": "1fcc6328c0162dca24b94c696ff3f5bf5acbc0d144ae1305451103da3f0784c2",
+    "jar_bytes": 124399856,
+    "compiled_classes": 5144,
+    "native_files_verified": 14,
+    "backup": null,
+    "deployed_at": "2026-10-15T10:04:53.351004+08:00"
+  },
+  "manifest_verified": {
+    "id": "CheatBreakerNeo-1.8.9",
+    "jar": "CheatBreakerNeo-1.8.9",
+    "clientVersion": "1.8.9"
+  },
+  "in_game_visual_effect_verified": false,
+  "build_log": ".target/hidden-arrow-build.log"
+}
