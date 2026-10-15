@@ -6,14 +6,12 @@ import com.cheatbreaker.client.config.SettingsDetailLevel;
 import com.cheatbreaker.client.event.type.GuiDrawEvent;
 import com.cheatbreaker.client.module.AbstractModule;
 import com.cheatbreaker.client.ui.module.CBGuiAnchor;
-import com.cheatbreaker.client.ui.module.CBModulesGui;
 import com.mojang.authlib.GameProfile;
 import java.util.List;
 import java.util.regex.Pattern;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,7 +31,7 @@ public class TabListModule extends AbstractModule {
    public Setting recoveredField1207;
    public Setting recoveredField1208;
    public Setting recoveredField1209;
-   public Pattern recoveredField1210 = Pattern.compile("(?i)§[0-689A-E]");
+   public Pattern recoveredField1210 = Pattern.compile("(?i)§[0-9A-F]");
    public Setting recoveredField1211;
    public Setting recoveredField1212;
    public Setting recoveredField1213;
@@ -45,6 +43,7 @@ public class TabListModule extends AbstractModule {
    public Setting recoveredField1219;
    public Setting recoveredField1220;
    public static ResourceLocation recoveredField1221 = new ResourceLocation("textures/gui/icons.png");
+   private static final ResourceLocation CLIENT_LOGO = new ResourceLocation("client/logo_white.png");
    public Setting recoveredField1222;
    public Setting recoveredField1223;
    public Setting recoveredField1224;
@@ -56,22 +55,8 @@ public class TabListModule extends AbstractModule {
    public Setting recoveredField1230;
    public Setting recoveredField1231;
 
-   public void method_20825(GuiDrawEvent var1) {
-      if (this.method_28866() || this.recoveredField3905 && !(this.minecraft.currentScreen instanceof CBModulesGui)) {
-         ScoreObjective var2 = this.minecraft.theWorld.Z().getObjectiveInDisplaySlot(0);
-         GL11.glPushMatrix();
-         this.scaleAndTranslate(var1.getResolution());
-         ScaledResolution var3 = new ScaledResolution(this.minecraft);
-         int var4 = var3.getScaledWidth();
-         Scoreboard var5 = this.minecraft.theWorld.Z();
-         ScoreObjective var6 = var5.getObjectiveInDisplaySlot(0);
-         if (this.minecraft.gameSettings.recoveredField2691.isKeyDown()
-            && (!this.minecraft.isIntegratedServerRunning() || this.minecraft.thePlayer.sendQueue.getPlayerInfoMap().size() > 1 || var2 != null)) {
-            this.method_20823(0, var5, var6, 0, 0);
-         }
-
-         GL11.glPopMatrix();
-      }
+   public void method_20825(GuiDrawEvent event) {
+      // The vanilla Tab overlay owns live rendering; retain this entry point for callers.
    }
 
    public String method_20833() {
@@ -83,7 +68,7 @@ public class TabListModule extends AbstractModule {
    }
 
    public TabListModule() {
-      super("Player List");
+      super("Tablist");
       this.setDefaultAnchor(CBGuiAnchor.MIDDLE_TOP);
       this.setDefaultTranslations(0.0F, 12.0F);
       this.recoveredField3912 = false;
@@ -205,167 +190,171 @@ public class TabListModule extends AbstractModule {
                && !this.minecraft.isIntegratedServerRunning()
          );
       this.method_28821("Customize the player list tab.");
-      this.method_28807("Tab");
+      this.method_28807("Tab", "Player List");
       this.method_28820(HudPreviewDrawEvent.class, this::method_20824);
-      this.method_28820(GuiDrawEvent.class, this::method_20825);
    }
 
-   public void method_20824(HudPreviewDrawEvent var1) {
-      if (this.method_28866()) {
-         GL11.glPushMatrix();
-         this.scaleAndTranslate(var1.method_01054());
-         ScaledResolution var2 = new ScaledResolution(this.minecraft);
-         int var3 = var2.getScaledWidth();
-         Scoreboard var4 = this.minecraft.theWorld.Z();
-         Object var5 = null;
-         ScoreObjective var6 = (ScoreObjective)(var5 != null ? var5 : var4.getObjectiveInDisplaySlot(1));
-         this.method_20823(0, var4, var6, 0, 0);
+   public void method_20824(HudPreviewDrawEvent event) {
+      if (this.method_28866() && this.minecraft.theWorld != null && this.minecraft.thePlayer != null) {
+         Scoreboard scoreboard = this.minecraft.theWorld.Z();
+         this.method_20823(event.method_01054().getScaledWidth(), scoreboard, scoreboard.getObjectiveInDisplaySlot(0), 0, 0);
+      }
+   }
+
+   public void method_20823(int screenWidth, Scoreboard scoreboard, ScoreObjective objective, int unusedX, int unusedY) {
+      if (this.minecraft.thePlayer == null || this.minecraft.theWorld == null || this.minecraft.getNetHandler() == null) {
+         return;
+      }
+      GuiPlayerTabOverlay overlay = this.minecraft.ingameGUI.overlayPlayerList;
+      List<NetworkPlayerInfo> players = GuiPlayerTabOverlay.field_175252_a.sortedCopy(this.minecraft.thePlayer.sendQueue.getPlayerInfoMap());
+      players = players.subList(0, Math.min(players.size(), 80));
+      boolean heads = this.minecraft.isIntegratedServerRunning() || this.minecraft.getNetHandler().getNetworkManager().getIsencrypted();
+      boolean showPing = this.recoveredField1214.method_08908();
+      boolean numberPing = this.recoveredField1219.method_08908();
+      int nameWidth = 0;
+      int scoreWidth = objective != null && objective.getRenderType() == IScoreObjectiveCriteria.EnumRenderType.HEARTS ? 90 : 0;
+      int pingWidth = showPing ? (numberPing ? 0 : 13) : 0;
+      for (NetworkPlayerInfo player : players) {
+         nameWidth = Math.max(nameWidth, this.minecraft.fontRendererObj.getStringWidth(this.getDisplayName(player)));
+         if (objective != null && objective.getRenderType() != IScoreObjectiveCriteria.EnumRenderType.HEARTS) {
+            scoreWidth = Math.max(scoreWidth, this.minecraft.fontRendererObj.getStringWidth(" " + scoreboard.getValueFromObjective(player.getGameProfile().getName(), objective).getScorePoints()));
+         }
+         if (showPing && numberPing) {
+            pingWidth = Math.max(pingWidth, this.minecraft.fontRendererObj.getStringWidth(pingText(player.method_13010())) + 3);
+         }
+      }
+      int logoWidth = this.recoveredField1224.method_08908() ? 10 : 0;
+      int availableWidth = Math.max(1, (int)(screenWidth / this.method_28770()) - 50);
+      TabListLayout layout = new TabListLayout(players.size(), (heads ? 9 : 0) + logoWidth + nameWidth + scoreWidth + pingWidth + 4, availableWidth);
+      List<String> header = overlay.header == null ? java.util.Collections.emptyList()
+         : this.minecraft.fontRendererObj.listFormattedStringToWidth(overlay.header.getFormattedText(), availableWidth);
+      List<String> footer = overlay.footer == null ? java.util.Collections.emptyList()
+         : this.minecraft.fontRendererObj.listFormattedStringToWidth(overlay.footer.getFormattedText(), availableWidth);
+      int panelWidth = layout.width;
+      for (String line : header) panelWidth = Math.max(panelWidth, this.minecraft.fontRendererObj.getStringWidth(line));
+      for (String line : footer) panelWidth = Math.max(panelWidth, this.minecraft.fontRendererObj.getStringWidth(line));
+      int headerHeight = header.isEmpty() ? 0 : header.size() * this.minecraft.fontRendererObj.FONT_HEIGHT + 1;
+      int footerHeight = footer.isEmpty() ? 0 : footer.size() * this.minecraft.fontRendererObj.FONT_HEIGHT + 1;
+      this.method_28812(panelWidth + 2, headerHeight + layout.rows * 9 + footerHeight + 2);
+      GL11.glPushMatrix();
+      try {
+         this.scaleAndTranslate(new ScaledResolution(this.minecraft));
+         GlStateManager.enableAlpha();
+         GlStateManager.enableBlend();
+         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+         if (this.recoveredField1209.method_08908()) {
+            Gui.drawRect(0, 0, panelWidth + 2, this.recoveredField3894, this.recoveredField1225.method_08901());
+         }
+         int y = 1;
+         for (String line : header) {
+            this.minecraft.fontRendererObj.drawStringWithShadow(line, (panelWidth + 2 - this.minecraft.fontRendererObj.getStringWidth(line)) / 2.0F, y, -1);
+            y += this.minecraft.fontRendererObj.FONT_HEIGHT;
+         }
+         if (!header.isEmpty()) y++;
+         int startX = 1 + (panelWidth - layout.width) / 2;
+         for (int index = 0; index < players.size(); index++) {
+            NetworkPlayerInfo player = players.get(index);
+            GameProfile profile = player.getGameProfile();
+            boolean own = profile.getId().equals(this.minecraft.getSession().getProfile().getId());
+            boolean clientPlayer = own || this.method_20834(profile.getName());
+            int x = startX + layout.columnX(index);
+            int rowY = y + layout.rowY(index);
+            if (this.recoveredField1226.method_08908()) {
+               Gui.drawRect(x, rowY, x + layout.columnWidth, rowY + 8, this.getRowColor(own, clientPlayer, player.method_13010()));
+            }
+            GlStateManager.color(1, 1, 1, 1);
+            GlStateManager.enableBlend();
+            int nameX = x;
+            if (heads) {
+               EntityPlayer entity = this.minecraft.theWorld.getPlayerEntityByUUID(profile.getId());
+               boolean flipped = entity != null && entity.isWearing(EnumPlayerModelParts.CAPE)
+                  && (profile.getName().equals("Dinnerbone") || profile.getName().equals("Grumm"));
+               this.minecraft.getTextureManager().bindTexture(player.getLocationSkin());
+               Gui.drawScaledCustomSizeModalRect(nameX, rowY, 8, flipped ? 16 : 8, 8, flipped ? -8 : 8, 8, 8, 64, 64);
+               if (entity != null && entity.isWearing(EnumPlayerModelParts.HAT)) {
+                  Gui.drawScaledCustomSizeModalRect(nameX, rowY, 40, flipped ? 16 : 8, 8, flipped ? -8 : 8, 8, 8, 64, 64);
+               }
+               nameX += 9;
+            }
+            if (logoWidth > 0) {
+               if (clientPlayer) {
+                  this.minecraft.getTextureManager().bindTexture(CLIENT_LOGO);
+                  Gui.drawModalRectWithCustomSizedTexture(nameX, rowY + 2, 0, 0, 8, 5, 8, 5);
+               }
+               nameX += logoWidth;
+            }
+            String name = this.getDisplayName(player);
+            boolean highlighted = own && this.recoveredField1215.method_08908() || clientPlayer && this.recoveredField1222.method_08908();
+            if (highlighted) name = this.method_20818(name);
+            boolean spectator = player.getGameType() == WorldSettings.GameType.SPECTATOR;
+            if (spectator) name = EnumChatFormatting.ITALIC + name;
+            int color = this.getNameColor(own, clientPlayer, spectator);
+            int scoreStart = nameX + nameWidth + 1;
+            int scoreEnd = x + layout.columnWidth - pingWidth - 1;
+            String fittedName = this.minecraft.fontRendererObj.trimStringToWidth(name, Math.max(0, Math.min(nameWidth, scoreEnd - nameX)));
+            this.minecraft.fontRendererObj.drawString(fittedName, nameX, rowY, color, this.recoveredField1227.method_08908());
+            if (objective != null && !spectator && scoreEnd - scoreStart > 5) {
+               overlay.drawScoreboardValues(objective, rowY, profile.getName(), scoreStart, scoreEnd, player);
+            }
+            if (showPing) {
+               if (numberPing) {
+                  String text = pingText(player.method_13010());
+                  this.minecraft.fontRendererObj.drawString(text, x + layout.columnWidth - this.minecraft.fontRendererObj.getStringWidth(text) - 1,
+                     rowY, this.getPingColor(player.method_13010()), this.recoveredField1213.method_08908());
+               } else {
+                  overlay.drawPing(layout.columnWidth, x, rowY, player);
+               }
+            }
+         }
+         y += layout.rows * 9 + (footer.isEmpty() ? 0 : 1);
+         for (String line : footer) {
+            this.minecraft.fontRendererObj.drawStringWithShadow(line, (panelWidth + 2 - this.minecraft.fontRendererObj.getStringWidth(line)) / 2.0F, y, -1);
+            y += this.minecraft.fontRendererObj.FONT_HEIGHT;
+         }
+      } finally {
+         GlStateManager.color(1, 1, 1, 1);
          GL11.glPopMatrix();
       }
    }
 
-   public void method_20823(int var1, Scoreboard var2, ScoreObjective var3, int var4, int var5) {
-      NetHandlerPlayClient var6 = this.minecraft.thePlayer.sendQueue;
-      List var7 = GuiPlayerTabOverlay.field_175252_a.sortedCopy(var6.getPlayerInfoMap());
-      int var8 = 0;
-      int var9 = 0;
-
-      for (NetworkPlayerInfo var11 : (Iterable<NetworkPlayerInfo>)(Iterable<?>)(var7)) {
-         int var12 = this.minecraft.fontRendererObj.getStringWidth(this.minecraft.ingameGUI.overlayPlayerList.getPlayerName(var11));
-         var8 = Math.max(var8, var12);
-         if (var3 != null && var3.getRenderType() != IScoreObjectiveCriteria.EnumRenderType.HEARTS) {
-            var12 = this.minecraft.fontRendererObj.getStringWidth(" " + var2.getValueFromObjective(var11.getGameProfile().getName(), var3).getScorePoints());
-            var9 = Math.max(var9, var12);
-         }
+   public String getDisplayName(NetworkPlayerInfo player) {
+      String name = this.minecraft.ingameGUI.overlayPlayerList.getPlayerName(player);
+      NickHiderModule nick = CheatBreaker.getInstance().getModuleManager().recoveredField1705;
+      if (nick != null && nick.isEnabled() && nick.recoveredField850.method_08908()) {
+         String username = this.minecraft.getSession().getUsername();
+         String replacement = nick.recoveredField849.method_08874();
+         name = name.replace(username, replacement.equals(username) ? "You" : replacement);
       }
+      return name;
+   }
 
-      var7 = var7.subList(0, Math.min(var7.size(), 80));
-      int var36 = var7.size();
-      int var37 = var36;
+   public static String pingText(int ping) {
+      return ping < 0 ? "?" : Integer.toString(ping);
+   }
 
-      int var39;
-      for (var39 = 1; var37 > 20; var37 = (var36 + var39 - 1) / var39) {
-         var39++;
-      }
+   public int getPingColor(int ping) {
+      if (!this.recoveredField1216.method_08908()) return this.recoveredField1220.method_08901();
+      if (ping < 0 || ping >= 600) return this.recoveredField1208.method_08901();
+      if (ping < 150) return this.recoveredField1223.method_08901();
+      if (ping < 300) return this.recoveredField1218.method_08901();
+      return this.recoveredField1217.method_08901();
+   }
 
-      boolean var13 = this.minecraft.isIntegratedServerRunning() || this.minecraft.getNetHandler().getNetworkManager().getIsencrypted();
-      int var14;
-      if (var3 != null) {
-         if (var3.getRenderType() == IScoreObjectiveCriteria.EnumRenderType.HEARTS) {
-            var14 = 90;
-         } else {
-            var14 = var9;
-         }
-      } else {
-         var14 = 0;
-      }
+   public int getRowColor(boolean own, boolean clientPlayer, int ping) {
+      if (own && this.recoveredField1228.method_08908()) return this.recoveredField1230.method_08901();
+      if (clientPlayer && this.recoveredField1206.method_08908()) return this.recoveredField1212.method_08901();
+      int color = this.recoveredField1211.method_08901();
+      return this.recoveredField1207.method_08908() ? (color & 0xFF000000) | (this.getPingColor(ping) & 0xFFFFFF) : color;
+   }
 
-      int var15 = Math.min(var39 * ((var13 ? 9 : 0) + var8 + var14 + 13), var1 - 50) / var39;
-      boolean var16 = false;
-      int var17 = 10;
-      int var18 = var15 * var39 + (var39 - 1) * 5;
-      List var19 = null;
-      List var20 = null;
-      if (this.minecraft.ingameGUI.overlayPlayerList.header != null) {
-         var19 = this.minecraft.fontRendererObj.listFormattedStringToWidth(this.minecraft.ingameGUI.overlayPlayerList.header.getFormattedText(), var1 - 50);
-
-         for (String var22 : (Iterable<String>)(Iterable<?>)(var19)) {
-            var18 = Math.max(var18, this.minecraft.fontRendererObj.getStringWidth(var22));
-         }
-      }
-
-      if (this.minecraft.ingameGUI.overlayPlayerList.footer != null) {
-         var20 = this.minecraft.fontRendererObj.listFormattedStringToWidth(this.minecraft.ingameGUI.overlayPlayerList.footer.getFormattedText(), var1 - 50);
-
-         for (String var45 : (Iterable<String>)(Iterable<?>)(var20)) {
-            var18 = Math.max(var18, this.minecraft.fontRendererObj.getStringWidth(var45));
-         }
-      }
-
-      if (var19 != null) {
-         Gui.a(
-            var1 / 2 - var18 / 2 - 1, var17 - 1, var1 / 2 + var18 / 2 + 1, var17 + var19.size() * this.minecraft.fontRendererObj.FONT_HEIGHT, Integer.MIN_VALUE
-         );
-
-         for (String var46 : (Iterable<String>)(Iterable<?>)(var19)) {
-            int var23 = this.minecraft.fontRendererObj.getStringWidth(var46);
-            this.minecraft.fontRendererObj.drawStringWithShadow(var46, var1 / 2 - var23 / 2, var17, -1);
-            var17 += this.minecraft.fontRendererObj.FONT_HEIGHT;
-         }
-
-         var17++;
-      }
-
-      Gui.a(var1 / 2 - var18 / 2 - 1, var17 - 1, var1 / 2 + var18 / 2 + 1, var17 + var37 * 9, Integer.MIN_VALUE);
-
-      for (int var43 = 0; var43 < var36; var43++) {
-         int var47 = var43 / var37;
-         int var49 = var43 % var37;
-         int var24 = 0;
-         int var25 = var17 + var49 * 9;
-         Gui.a(var24, var25, var24 + var15, var25 + 8, 553648127);
-         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-         GlStateManager.enableAlpha();
-         GlStateManager.enableBlend();
-         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-         if (var43 < var7.size()) {
-            NetworkPlayerInfo var26 = (NetworkPlayerInfo)var7.get(var43);
-            java.lang.String var27 = this.minecraft.ingameGUI.overlayPlayerList.getPlayerName(var26);
-            GameProfile var28 = var26.getGameProfile();
-            if (var13) {
-               EntityPlayer var29 = this.minecraft.theWorld.getPlayerEntityByUUID(var28.getId());
-               boolean var30 = var29 != null
-                  && var29.isWearing(EnumPlayerModelParts.CAPE)
-                  && (var28.getName().equals("Dinnerbone") || var28.getName().equals("Grumm"));
-               this.minecraft.getTextureManager().bindTexture(var26.getLocationSkin());
-               int var31 = 8 + (var30 ? 8 : 0);
-               int var32 = 8 * (var30 ? -1 : 1);
-               Gui.drawScaledCustomSizeModalRect(var24, var25, 8.0F, var31, 8, var32, 8, 8, 64.0F, 64.0F);
-               if (var29 != null && var29.isWearing(EnumPlayerModelParts.HAT)) {
-                  int var33 = 8 + (var30 ? 8 : 0);
-                  int var34 = 8 * (var30 ? -1 : 1);
-                  Gui.drawScaledCustomSizeModalRect(var24, var25, 40.0F, var33, 8, var34, 8, 8, 64.0F, 64.0F);
-               }
-
-               var24 += 9;
-            }
-
-            if (var26.getGameType() == WorldSettings.GameType.SPECTATOR) {
-               var27 = EnumChatFormatting.ITALIC + var27;
-               this.minecraft.fontRendererObj.drawStringWithShadow((String)var27, var24, var25, -1862270977);
-            } else {
-               this.minecraft.fontRendererObj.drawStringWithShadow((String)var27, var24, var25, -1);
-            }
-
-            if (var3 != null && var26.getGameType() != WorldSettings.GameType.SPECTATOR) {
-               int var52 = var24 + var8 + 1;
-               int var53 = var52 + var14;
-               if (var53 - var52 > 5) {
-                  this.minecraft.ingameGUI.overlayPlayerList.drawScoreboardValues(var3, var25, var28.getName(), var52, var53, var26);
-               }
-            }
-
-            this.minecraft.ingameGUI.overlayPlayerList.drawPing(var15, var24 - (var13 ? 9 : 0), var25, var26);
-         }
-      }
-
-      if (var20 != null) {
-         var17 = var17 + var37 * 9 + 1;
-         Gui.a(
-            var1 / 2 - var18 / 2 - 1, var17 - 1, var1 / 2 + var18 / 2 + 1, var17 + var20.size() * this.minecraft.fontRendererObj.FONT_HEIGHT, Integer.MIN_VALUE
-         );
-
-         for (String var48 : (Iterable<String>)(Iterable<?>)(var20)) {
-            int var50 = this.minecraft.fontRendererObj.getStringWidth(var48);
-            this.minecraft.fontRendererObj.drawStringWithShadow(var48, var1 / 2 - var50 / 2, var17, -1);
-            var17 += this.minecraft.fontRendererObj.FONT_HEIGHT;
-         }
-      }
-
-      this.method_28812(10.0F, 10.0F);
+   public int getNameColor(boolean own, boolean clientPlayer, boolean spectator) {
+      if (own && this.recoveredField1215.method_08908()) return this.recoveredField1231.method_08901();
+      if (clientPlayer && this.recoveredField1222.method_08908()) return this.recoveredField1229.method_08901();
+      return spectator ? -1862270977 : -1;
    }
 
    public boolean method_20834(String var1) {
+      if (CheatBreaker.getInstance().method_19771() == null) return false;
       for (PlayerNametagStyle var3 : CheatBreaker.getInstance().method_19771().method_21030().values()) {
          if (var3.method_26420().equalsIgnoreCase(var1)) {
             return true;

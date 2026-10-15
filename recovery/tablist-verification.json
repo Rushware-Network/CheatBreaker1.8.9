@@ -1,0 +1,68 @@
+{
+  "feature": "Connect existing TabListModule",
+  "module_name": "Tablist",
+  "search_aliases": [
+    "Tab",
+    "Player List"
+  ],
+  "default_enabled": false,
+  "entry_point": "GuiPlayerTabOverlay.renderPlayerlist delegates while enabled; vanilla renderer remains when disabled",
+  "live_rendering": "Single vanilla Tab-key render path; no second GuiDrawEvent subscription",
+  "settings_connected": [
+    "Panel and row background visibility/colors",
+    "Own and CheatBreaker player row/name highlights",
+    "Name and numeric ping text shadows",
+    "CheatBreaker logo for known client players",
+    "Ping icon or numeric display",
+    "Static/dynamic ping colors and row tint"
+  ],
+  "compatibility": [
+    "Server header/footer",
+    "Vanilla ordering and 80-player cap",
+    "Maximum 20 rows per column",
+    "Skins, hats, Dinnerbone/Grumm faces",
+    "Spectator styling",
+    "Scoreboard numbers/hearts",
+    "Nick Hider",
+    "Existing scale, anchor, HUD position, and config persistence"
+  ],
+  "layout_fixes": [
+    "Positive width from scaled screen size",
+    "Separate column positions",
+    "Measured HUD bounds before anchor transform",
+    "Name clipping to column space",
+    "Balanced render matrix and blend state"
+  ],
+  "tests": [
+    "Live overlay delegation and HUD-hidden handling",
+    "Column layout and player cap",
+    "Empty/narrow layout safety",
+    "Ping thresholds and unknown responses",
+    "Highlight precedence and row opacity"
+  ],
+  "validation": {
+    "full_build": "mvnw.cmd clean package: BUILD SUCCESS",
+    "java_tests": 95,
+    "failures": 0,
+    "errors": 0,
+    "recovery_audit_tests": 7,
+    "source_jar_constructor_linkage": "passed",
+    "jar_sha256_verified": true,
+    "manifest_fields_verified": true,
+    "native_files_verified": 14,
+    "build_log": ".target/tablist-build.log",
+    "game_visuals_verified": false,
+    "live_multiplayer_verified": false
+  },
+  "deployment": {
+    "version": "CheatBreaker 1.8.9",
+    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
+    "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
+    "jar_sha256": "4aec66028711eada5db9b4e387e04d5a50a0a4f08e9f5058f2369fc6e5e42405",
+    "jar_bytes": 124431262,
+    "compiled_classes": 5146,
+    "native_files_verified": 14,
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261015-134411",
+    "deployed_at": "2026-10-15T13:44:11.833749+08:00"
+  }
+}

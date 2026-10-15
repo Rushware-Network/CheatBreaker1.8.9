@@ -12,6 +12,7 @@ import com.cheatbreaker.client.module.staff.XRayModule;
 import com.cheatbreaker.client.module.type.AnimationsModule;
 import com.cheatbreaker.client.module.type.HurtcamModule;
 import com.cheatbreaker.client.module.type.AutoTextModule;
+import com.cheatbreaker.client.module.type.TabListModule;
 import com.cheatbreaker.client.module.type.BlockOverlayModule;
 import com.cheatbreaker.client.module.type.BossBarModule;
 import com.cheatbreaker.client.module.type.CPSModule;
@@ -113,6 +114,7 @@ public class ModuleManager {
    public ToggleSprintModule recoveredField1716;
    public AnimationsModule recoveredField1717;
    public PingModule recoveredField1718;
+   public TabListModule tabList;
    public ChatModule chatModule;
    public HypixelModule recoveredField1719;
    public Map<Setting, KeybindElement> recoveredField1720;
@@ -172,6 +174,7 @@ public class ModuleManager {
       this.recoveredField1706.add(this.recoveredField1700 = new ReachDisplayModule());
       this.recoveredField1706.add(this.recoveredField1704 = new ServerAddressModule());
       this.recoveredField1706.add(this.recoveredField1718 = new PingModule());
+      this.recoveredField1706.add(this.tabList = new TabListModule());
       this.recoveredField1706.add(this.clockModule = new ClockModule());
       this.recoveredField1706.add(this.saturationModule = new SaturationModule());
       this.recoveredField1706.add(this.packDisplayModule = new PackDisplayModule());

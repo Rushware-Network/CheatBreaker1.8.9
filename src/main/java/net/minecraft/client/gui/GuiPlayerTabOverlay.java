@@ -2,6 +2,7 @@ package net.minecraft.client.gui;
 
 import com.cheatbreaker.client.CheatBreaker;
 import com.cheatbreaker.client.module.type.NickHiderModule;
+import com.cheatbreaker.client.module.type.TabListModule;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 import com.mojang.authlib.GameProfile;
@@ -32,6 +33,14 @@ public class GuiPlayerTabOverlay extends Gui {
    public IChatComponent footer;
 
    public void renderPlayerlist(int var1, Scoreboard var2, ScoreObjective var3) {
+      CheatBreaker client = CheatBreaker.getInstance();
+      TabListModule tabList = client == null || client.getModuleManager() == null ? null : client.getModuleManager().tabList;
+      if (tabList != null && tabList.isEnabled()) {
+         if (tabList.method_28866()) {
+            tabList.method_20823(var1, var2, var3, 0, 0);
+         }
+         return;
+      }
       NetHandlerPlayClient var4 = this.mc.thePlayer.sendQueue;
       List var5 = field_175252_a.sortedCopy(var4.getPlayerInfoMap());
       int var6 = 0;
