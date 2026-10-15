@@ -43,7 +43,6 @@ public class TabListModule extends AbstractModule {
    public Setting recoveredField1219;
    public Setting recoveredField1220;
    public static ResourceLocation recoveredField1221 = new ResourceLocation("textures/gui/icons.png");
-   private static final ResourceLocation CLIENT_LOGO = new ResourceLocation("client/logo_white.png");
    public Setting recoveredField1222;
    public Setting recoveredField1223;
    public Setting recoveredField1224;
@@ -278,7 +277,7 @@ public class TabListModule extends AbstractModule {
             }
             if (logoWidth > 0) {
                if (clientPlayer) {
-                  this.minecraft.getTextureManager().bindTexture(CLIENT_LOGO);
+                  this.minecraft.getTextureManager().bindTexture(PlayerNametagStyle.LOGO_TEXTURE);
                   Gui.drawModalRectWithCustomSizedTexture(nameX, rowY + 2, 0, 0, 8, 5, 8, 5);
                }
                nameX += logoWidth;

@@ -5,11 +5,12 @@
     "The sneaking nametag path renders text directly and never draws the logo."
   ],
   "changes": [
-    "Use a local white two-layer logo for the current player when service data is absent, without inserting a fabricated entry into the shared identity map.",
-    "Keep remote logos restricted to recognized player UUIDs and preserve supplied colors and subicons.",
+    "Use a local logo identity fallback for the current player when service data is absent, without inserting a fabricated entry into the shared identity map.",
+    "Keep remote logos restricted to recognized player UUIDs and preserve subicons. Both local and remote logos use the shared red-C, white-B texture instead of service-supplied tint colors.",
     "Match the entity username after removing formatting codes; allow the local Nick Hider alias, and exclude partial usernames and unrelated score labels.",
     "Share the text and logo drawing routine with sneaking nametags and reserve space for the logo in both paths.",
-    "Size the normal nametag background using the displayed name, including Nick Hider substitution."
+    "Size the normal nametag background using the displayed name, including Nick Hider substitution.",
+    "Nametag and Tablist both reference PlayerNametagStyle.LOGO_TEXTURE (client/logo_white.png); normal and sneaking nametags retain their opacity, shadow and subicon settings."
   ],
   "usage": "Enable Nametag and Show CheatBreaker Logo. To view your own label, also enable Shown own Nametag and use third-person view. Remote player recognition still requires service data.",
   "validation": {
@@ -22,9 +23,9 @@
     "skipped": 0,
     "recovery_audit_tests": 7,
     "source_jar_constructor_linkage": "passed",
-    "build_log": ".target/nametag-logo-build.log",
-    "package_log": ".target/nametag-logo-package.log",
-    "deploy_log": ".target/nametag-logo-deploy.log",
+    "build_log": ".target/nametag-unified-logo-build.log",
+    "package_log": ".target/nametag-unified-logo-package.log",
+    "deploy_log": ".target/nametag-unified-logo-deploy.log",
     "jar_sha256_verified": true,
     "manifest_fields_verified": true,
     "native_files_verified": 14,
@@ -34,8 +35,21 @@
   "deployment": {
     "version": "CheatBreaker 1.8.9",
     "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
-    "jar_sha256": "6f0d5ca211588cf73b538c87150a677d4a3a7e42795cc34a1f587cb5b7735793",
-    "backup": ".target/deployment-backups/20261015-202439",
-    "deployed_at": "2026-10-15T20:24:39.980478+08:00"
+    "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
+    "jar_sha256": "8baccfeee1e1ea048855b69ba06e8d5241b3f41d829d9d2f622d6e464b561563",
+    "jar_bytes": 124434010,
+    "compiled_classes": 5146,
+    "native_files_verified": 14,
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261015-203642",
+    "deployed_at": "2026-10-15T20:36:43.418040+08:00"
+  },
+  "shared_logo": {
+    "resource": "client/logo_white.png",
+    "constant": "PlayerNametagStyle.LOGO_TEXTURE",
+    "colors": "Red C, white B",
+    "texture_sha256": "d5af1e5804fc8830f6f33dab894b6df638b6c2621095636388a27efd1857b4bd",
+    "source_texture_visually_inspected": true,
+    "compiled_renderers_reference_same_constant": true,
+    "service_tint_colors_applied": false
   }
 }
