@@ -4,8 +4,8 @@
 
 - 每轮先完成修改、构建、部署及报告更新，再将全部变更一次性提交，说明修改内容并保持工作区干净。每轮只提交一次；不自动推送，由用户手动推送。
 - 执行 `mvnw.cmd clean package` 全量构建，编译、Java 测试、recovery audit 和成品 JAR 构造器链接检查须通过；不复用旧 JAR 或增量打包。
-- 成功后依次运行 `python tools/package_client.py`、`python tools/deploy_neo.py`，部署到 `C:\Users\hp\AppData\Roaming\.minecraft\versions\CheatBreakerNeo-1.8.9`。
-- 更新 JAR、JSON、natives，保留脚本备份及用户配置、存档等数据。核对 JAR SHA-256、全部 natives；JSON 的 id/jar 为 `CheatBreakerNeo-1.8.9`，clientVersion 为 `1.8.9`。
+- 成功后依次运行 `python tools/package_client.py`、`python tools/deploy_neo.py`，以后统一部署到 `C:\Users\hp\AppData\Roaming\.minecraft\versions\CheatBreaker 1.8.9`。
+- 更新 JAR、JSON、natives，保留脚本备份及用户配置、存档等数据。核对 JAR SHA-256、全部 natives；JSON 的 id/jar 为 `CheatBreaker 1.8.9`，clientVersion 为 `1.8.9`。
 - 最终说明提交号、构建/测试结果、部署目录；未验证游戏内效果须如实说明。
 
 ## 范围与命名

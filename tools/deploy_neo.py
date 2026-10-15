@@ -9,7 +9,7 @@ import zipfile
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--version', default='CheatBreakerNeo-1.8.9', help='Launcher version directory name')
+parser.add_argument('--version', default='CheatBreaker 1.8.9', help='Launcher version directory name')
 VERSION = parser.parse_args().version
 if not VERSION or VERSION in ('.', '..') or any(c in VERSION for c in '<>:"/\\|?*') or VERSION.endswith((' ', '.')):
     parser.error('--version must be a single Windows directory name')
