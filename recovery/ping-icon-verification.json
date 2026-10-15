@@ -1,0 +1,37 @@
+{
+  "feature": "Ping module preview icon",
+  "texture": "assets/minecraft/textures/gui/icons.png",
+  "sprite_rectangle": [
+    0,
+    176,
+    10,
+    8
+  ],
+  "preview_size": [
+    40,
+    32
+  ],
+  "source": "Vanilla server-list green full-signal sprite",
+  "rendering": "Direct atlas region, aspect ratio preserved",
+  "ping_logic_changed": false,
+  "full_build": "mvnw.cmd clean package: BUILD SUCCESS",
+  "java_tests": 90,
+  "failures": 0,
+  "errors": 0,
+  "recovery_audit_tests": 7,
+  "source_jar_constructor_linkage": "passed",
+  "build_log": ".target/ping-icon-build.log",
+  "deployed_atlas_bytes_verified": true,
+  "game_visuals_verified": false,
+  "deployment": {
+    "version": "CheatBreaker 1.8.9",
+    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
+    "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
+    "jar_sha256": "8a7eae2421abcf4b3a98607adf09d6a561791f61bbc86ac5373e9ba8aff9b575",
+    "jar_bytes": 124429044,
+    "compiled_classes": 5145,
+    "native_files_verified": 14,
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261015-130543",
+    "deployed_at": "2026-10-15T13:05:44.107751+08:00"
+  }
+}

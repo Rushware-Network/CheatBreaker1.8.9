@@ -179,13 +179,23 @@ public class ModulePreviewElement extends AbstractModulesGuiElement {
             float var25 = this.recoveredField3800.getPreviewIconWidth();
             float var16 = this.recoveredField3800.getPreviewIconHeight();
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            RenderUtil.method_22064(
-               this.recoveredField3800.getPreviewIcon(),
-               this.x + this.width / 2 - var25 / 2.0F + var8,
-               this.y + var7 + this.height / 2 - 26 - var16 / 2.0F,
-               var25,
-               var16
-            );
+            if (this.recoveredField3800 == CheatBreaker.getInstance().getModuleManager().recoveredField1718) {
+               // Vanilla server-list full signal: the first 10x8 sprite at (0, 176).
+               Minecraft.getMinecraft().getTextureManager().bindTexture(Gui.icons);
+               Gui.drawScaledCustomSizeModalRect(
+                  (int)(this.x + this.width / 2 - var25 / 2.0F + var8),
+                  (int)(this.y + var7 + this.height / 2 - 26 - var16 / 2.0F),
+                  0.0F, 176.0F, 10, 8, (int)var25, (int)var16, 256.0F, 256.0F
+               );
+            } else {
+               RenderUtil.method_22064(
+                  this.recoveredField3800.getPreviewIcon(),
+                  this.x + this.width / 2 - var25 / 2.0F + var8,
+                  this.y + var7 + this.height / 2 - 26 - var16 / 2.0F,
+                  var25,
+                  var16
+               );
+            }
          }
       }
 

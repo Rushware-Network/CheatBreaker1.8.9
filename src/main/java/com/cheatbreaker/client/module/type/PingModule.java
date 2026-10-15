@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.network.OldServerPinger;
+import net.minecraft.client.gui.Gui;
 import com.cheatbreaker.client.config.IntegerRangeDefaults;
 
 public class PingModule extends NumberHudModule {
@@ -61,6 +62,7 @@ public class PingModule extends NumberHudModule {
    public PingModule() {
       super("Ping", "[19 ms]");
       this.method_28821("Displays your server latency.");
+      this.setPreviewIcon(Gui.icons, 40, 32);
    }
 
    @Override
