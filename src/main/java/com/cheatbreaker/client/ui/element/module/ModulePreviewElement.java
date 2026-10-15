@@ -162,13 +162,18 @@ public class ModulePreviewElement extends AbstractModulesGuiElement {
             }
 
             GL11.glScalef(var17, var17, var17);
-            float var27 = Minecraft.getMinecraft().fontRendererObj.getStringWidth(var19) * var17;
-            if (this.recoveredField3800.getPreviewType() == null && !this.recoveredField3797) {
-               int var43 = (int)((this.x + 1 + this.width / 2 - var27 / 2.0F) / var17);
-               Minecraft.getMinecraft().fontRendererObj.drawString(var19, var43, (int)((this.y + this.height / 2 - 32) / var17), -13750738);
-            } else {
-               float var42 = (int)((this.x + 1 + this.width / 2 - var27 / 2.0F) / var17);
-               Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(var19, var42, (int)((this.y + this.height / 2 - 32) / var17), -1);
+            String[] previewLines = var19.split("\n");
+            float lineHeight = Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + 1.0F;
+            float firstLineY = (this.y + this.height / 2 - 32) / var17 - (previewLines.length - 1) * lineHeight / 2.0F;
+            for (int line = 0; line < previewLines.length; line++) {
+               float lineWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(previewLines[line]) * var17;
+               int lineX = (int)((this.x + 1 + this.width / 2 - lineWidth / 2.0F) / var17);
+               int lineY = (int)(firstLineY + line * lineHeight);
+               if (this.recoveredField3800.getPreviewType() == null && !this.recoveredField3797) {
+                  Minecraft.getMinecraft().fontRendererObj.drawString(previewLines[line], lineX, lineY, -13750738);
+               } else {
+                  Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(previewLines[line], lineX, lineY, -1);
+               }
             }
          } else if (this.recoveredField3800.getPreviewType() == AbstractModule.PreviewType.ICON) {
             float var25 = this.recoveredField3800.getPreviewIconWidth();

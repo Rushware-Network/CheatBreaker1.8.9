@@ -1,0 +1,32 @@
+{
+  "feature": "Auto Text module preview icon",
+  "preview_lines": [
+    "/command",
+    "/command",
+    "/command"
+  ],
+  "font": "Minecraft fontRendererObj",
+  "color": "white with native text shadow",
+  "alignment": "Each line horizontally centered; group vertically centered in preview area",
+  "background_added": false,
+  "implementation": "Existing LABEL preview supports newline-separated lines; single-line spacing and style preserved",
+  "full_build": "mvnw.cmd clean package: BUILD SUCCESS",
+  "java_tests": 90,
+  "failures": 0,
+  "errors": 0,
+  "recovery_audit_tests": 7,
+  "source_jar_constructor_linkage": "passed",
+  "build_log": ".target/autotext-icon-build.log",
+  "game_visuals_verified": false,
+  "deployment": {
+    "version": "CheatBreaker 1.8.9",
+    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
+    "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
+    "jar_sha256": "02140e3f1c67d31b5cd2509cc3a1a95fd3103266b10b6b78138b41dfe94c3a19",
+    "jar_bytes": 124428767,
+    "compiled_classes": 5145,
+    "native_files_verified": 14,
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261015-130135",
+    "deployed_at": "2026-10-15T13:01:36.290895+08:00"
+  }
+}

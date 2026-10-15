@@ -29,7 +29,7 @@ public class AutoTextModule extends AbstractModule {
       this.recoveredField1867 = 3;
       this.recoveredField1864 = 1;
       this.setDefaultState(false);
-      this.setPreviewLabel("Auto Text", 1.0F);
+      this.setPreviewLabel("/command\n/command\n/command", 1.0F);
       this.method_28821("Send a command or message with a press of a key or button!");
       this.method_28823("The allowed commands are: " + Arrays.toString((Object[])this.recoveredField1866).replaceAll("\\[", "").replaceAll("]", ""), "hypixel");
       this.recoveredField1863.addAll(this.getSettingsList());
