@@ -1,0 +1,31 @@
+{
+  "feature": "Pack Display module preview icon",
+  "source_image": "src/main/resources/pack.png",
+  "resource": "assets/minecraft/client/icons/mods/default_pack.png",
+  "image_sha256": "fef917bb781ed7c19d3ddf9b410783310c88a8e20f9d06413c4dab26d6567844",
+  "preview_size": [
+    32,
+    32
+  ],
+  "image_matches_native_and_deployed_jar": true,
+  "hud_active_pack_image": "unchanged",
+  "full_build": "mvnw.cmd clean package: BUILD SUCCESS",
+  "java_tests": 90,
+  "failures": 0,
+  "errors": 0,
+  "recovery_audit_tests": 7,
+  "source_jar_constructor_linkage": "passed",
+  "build_log": ".target/pack-display-icon-build.log",
+  "game_visuals_verified": false,
+  "deployment": {
+    "version": "CheatBreaker 1.8.9",
+    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
+    "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
+    "jar_sha256": "0481891bf5f05d75736355959bedffff0a696f1d678dd418151eae7b30931158",
+    "jar_bytes": 124428588,
+    "compiled_classes": 5145,
+    "native_files_verified": 14,
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261015-125607",
+    "deployed_at": "2026-10-15T12:56:07.817253+08:00"
+  }
+}

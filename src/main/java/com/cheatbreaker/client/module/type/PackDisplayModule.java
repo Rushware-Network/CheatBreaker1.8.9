@@ -93,6 +93,7 @@ public class PackDisplayModule extends IconTextHudModule {
       this.recoveredField3113 = 0;
       this.method_28821("Displays your active Resource Pack(s).");
       this.method_28829("canelex");
+      this.setPreviewIcon(new ResourceLocation("client/icons/mods/default_pack.png"), 32, 32);
       this.method_28820(TickEvent.class, this::method_01863);
    }
 
