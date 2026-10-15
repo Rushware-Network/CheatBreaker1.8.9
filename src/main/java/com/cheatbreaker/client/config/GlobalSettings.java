@@ -108,6 +108,7 @@ public class GlobalSettings {
    public Setting recoveredField562;
    public Setting recoveredField563;
    public Setting disableParticlePhysics;
+   public Setting tileEntityDistance;
    public Setting recoveredField564;
    public Setting recoveredField565;
    public Setting recoveredField566;
@@ -170,6 +171,14 @@ public class GlobalSettings {
       }).setValue(85).setMinMax(0, 100).method_08892("%").method_08915("MEDIUM");
       this.recoveredField523 = new Setting(this.recoveredField571, "label").setValue("FPS Boost");
       this.recoveredField563 = new Setting(this.recoveredField571, "Enable FPS Boost", "Enables all FPS boost settings in this category.").setValue(true);
+      this.tileEntityDistance = new Setting(this.recoveredField571, "Tile Entity Distance",
+            "Render tile entities within a percentage of their original distance. 100% preserves vanilla distances.")
+         .setValue(100)
+         .setMinMax(5, 100)
+         .method_08892(".0%")
+         .method_08915("MEDIUM")
+         .method_08893("fps-inverse-52", "fps-52")
+         .method_08894(this.recoveredField563::method_08908);
       this.disableParticlePhysics = new Setting(this.recoveredField571, "Disable Particle Physics",
             "Skip particle collisions with blocks to reduce CPU usage. Particles can pass through blocks.")
          .setValue(false)

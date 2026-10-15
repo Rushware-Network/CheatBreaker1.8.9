@@ -1,6 +1,9 @@
 package net.minecraft.client.renderer.tileentity;
 
 import com.google.common.collect.Maps;
+import com.cheatbreaker.client.CheatBreaker;
+import com.cheatbreaker.client.config.GlobalSettings;
+import com.cheatbreaker.client.util.TileEntityRenderDistance;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -32,6 +35,7 @@ import net.optifine.EmissiveTextures;
 import net.optifine.reflect.Reflector;
 
 public class TileEntityRendererDispatcher {
+   private double distanceSquaredMultiplier = 1.0;
    public static double staticPlayerX;
    public Map<Class, TileEntitySpecialRenderer> mapSpecialRenderers = Maps.newHashMap();
    public double entityZ;
@@ -51,6 +55,11 @@ public class TileEntityRendererDispatcher {
    public float entityPitch;
 
    public void cacheActiveRenderInfo(World var1, TextureManager var2, FontRenderer var3, Entity var4, float var5) {
+      CheatBreaker client = CheatBreaker.getInstance();
+      GlobalSettings settings = client == null ? null : client.getGlobalSettings();
+      this.distanceSquaredMultiplier = settings == null || settings.recoveredField563 == null || settings.tileEntityDistance == null
+         ? 1.0 : TileEntityRenderDistance.squaredMultiplier(settings.recoveredField563.method_08908(),
+            ((Number)settings.tileEntityDistance.getValue()).doubleValue());
       if (this.worldObj != var1) {
          this.setWorld(var1);
       }
@@ -70,7 +79,7 @@ public class TileEntityRendererDispatcher {
    }
 
    public void renderTileEntity(TileEntity var1, float var2, int var3) {
-      if (var1.a(this.entityX, this.entityY, this.entityZ) < var1.getMaxRenderDistanceSquared()) {
+      if (var1.a(this.entityX, this.entityY, this.entityZ) < var1.getMaxRenderDistanceSquared() * this.distanceSquaredMultiplier) {
          boolean var4 = true;
          if (Reflector.ForgeTileEntity_hasFastRenderer.exists()) {
             var4 = !this.drawingBatch || !Reflector.callBoolean(var1, Reflector.ForgeTileEntity_hasFastRenderer);

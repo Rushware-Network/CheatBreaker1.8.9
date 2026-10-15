@@ -1,0 +1,62 @@
+{
+  "feature": "Tile Entity Distance",
+  "date": "2026-10-15",
+  "ui": {
+    "category": "FPS Boost",
+    "range_percent": [
+      5,
+      100
+    ],
+    "default_percent": 100,
+    "step_percent": 1,
+    "display": "100.0%",
+    "center_label": "MEDIUM",
+    "control": "Native IconNumericSliderElement",
+    "icons": [
+      "fps-inverse-52",
+      "fps-52"
+    ],
+    "added_background": false,
+    "persistence": "Existing global settings config save/load"
+  },
+  "behavior": {
+    "distance": "Per-type original maximum distance multiplied by percentage / 100",
+    "squared_comparison": "Original squared distance multiplied by (percentage / 100)^2",
+    "examples_at_50_percent": {
+      "ordinary_blocks": 32,
+      "beacon": 128
+    },
+    "fps_boost_disabled": "Original distance restored",
+    "settings_lookup": "Once per cacheActiveRenderInfo call; multiplier reused for tile entities",
+    "world_logic": "Unchanged"
+  },
+  "validation": {
+    "full_build": "mvnw.cmd clean package: BUILD SUCCESS",
+    "java_tests": 90,
+    "failures": 0,
+    "errors": 0,
+    "recovery_audit_tests": 7,
+    "source_jar_constructor_linkage": "passed",
+    "jar_sha256": "f4f681d94e50b644248aa5bb3fdfc56f19671bacffbb8bdcfa64a2c6610ed711",
+    "manifest_fields_verified": {
+      "id": "CheatBreakerNeo-1.8.9",
+      "jar": "CheatBreakerNeo-1.8.9",
+      "clientVersion": "1.8.9"
+    },
+    "native_files_verified": 14,
+    "game_visuals_verified": false,
+    "fps_benchmark_performed": false,
+    "build_log": ".target/tile-entity-distance-build.log"
+  },
+  "deployment": {
+    "version": "CheatBreakerNeo-1.8.9",
+    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreakerNeo-1.8.9",
+    "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
+    "jar_sha256": "f4f681d94e50b644248aa5bb3fdfc56f19671bacffbb8bdcfa64a2c6610ed711",
+    "jar_bytes": 124401094,
+    "compiled_classes": 5145,
+    "native_files_verified": 14,
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261015-124646",
+    "deployed_at": "2026-10-15T12:46:47.310088+08:00"
+  }
+}
