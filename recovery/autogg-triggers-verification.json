@@ -1,5 +1,5 @@
 {
-  "change": "Add custom AutoGG chat triggers using CheatBreaker's native boolean and string settings, text editor and profile persistence.",
+  "change": "Allow Auto GG triggers on all multiplayer servers; prefix the configured message with /achat only when the server address contains hypixel (case-insensitive).",
   "usage": {
     "module": "Hypixel Collection",
     "enable": "Enable the module and Auto GG.",
@@ -10,25 +10,26 @@
     "maximum_characters": 512,
     "defaults_setting": "Use Default GG Triggers",
     "defaults_behavior": "Enabled by default. Disable to use only custom triggers; custom triggers also work when the default trigger download fails.",
-    "scope": "Server address must contain hypixel. Existing outgoing message and delay settings remain in use."
+    "scope": "All multiplayer servers. Addresses containing hypixel send /achat followed by the configured message; other servers send the configured message directly. Existing trigger, message and delay settings remain in use; enable Hypixel Collection and Auto GG."
   },
   "implementation": [
     "Expose the custom string in the existing module UI by following its String suffix convention.",
     "Set the editor length limit before loading existing text so long values survive reopening.",
     "Keep other string settings at the existing 64-character limit.",
-    "Safely publish the downloaded trigger list and discard blank default entries."
+    "Safely publish the downloaded trigger list and discard blank default entries.",
+    "Run Auto GG outside the Hypixel-only feature guard; keep other Hypixel features in that guard and use Locale.ROOT for address matching."
   ],
   "build_command": "mvnw.cmd clean package",
   "build_directory": ".target/maven-source",
-  "build_log": ".target/autogg-build.log",
+  "build_log": ".target/auto-gg-build.log",
   "in_game_effect_verified": false,
   "java_tests": {
-    "run": 106,
+    "run": 107,
     "failures": 0,
     "errors": 0,
     "skipped": 0
   },
-  "regression_tests": "AutoGgTriggersTest: 5 passed; native UI registration and visibility, defaults, custom-only mode, offline matching, empty entries, separators, case sensitivity and long text preservation.",
+  "regression_tests": "AutoGgTriggersTest: 6 passed; includes chat-event routing for localhost and uppercase Hypixel addresses, single send per event, configured messages and delay, default triggers on other servers, nonmatching messages, disabled Auto GG and missing server data.",
   "recovery_audit": {
     "run": 7,
     "passed": true
@@ -38,12 +39,12 @@
     "version": "CheatBreaker 1.8.9",
     "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
     "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
-    "jar_sha256": "27e3531e8101fd27c9429e0f3c9dceb274e3740075f7a9cde42ce509d89a79c6",
-    "jar_bytes": 124435350,
+    "jar_sha256": "7f73758aef3e63c719cc5cb2f04fae52a4d214c99e21da9da58e10d337eea2eb",
+    "jar_bytes": 124435471,
     "compiled_classes": 5146,
     "native_files_verified": 14,
-    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261017-122826",
-    "deployed_at": "2026-10-17T12:28:27.106018+08:00"
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261017-124847",
+    "deployed_at": "2026-10-17T12:48:47.701365+08:00"
   },
   "manifest_verified": {
     "id": "CheatBreaker 1.8.9",

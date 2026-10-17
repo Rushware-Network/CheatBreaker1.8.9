@@ -6,6 +6,7 @@ import com.cheatbreaker.client.module.AbstractModule;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.minecraft.client.Minecraft;
@@ -167,17 +168,20 @@ public class HypixelModule extends AbstractModule {
 
    public void method_25691(ChatMessageEvent var1) {
       String var3 = var1.method_00228();
-      if (this.minecraft.getCurrentServerData() != null && this.minecraft.getCurrentServerData().serverIP.toLowerCase().contains("hypixel")) {
+      if (this.minecraft.getCurrentServerData() == null) {
+         return;
+      }
+      boolean hypixel = this.minecraft.getCurrentServerData().serverIP.toLowerCase(Locale.ROOT).contains("hypixel");
+      if (this.recoveredField450.method_08908() && this.matchesAutoGgTrigger(var3)) {
+         this.method_25694((hypixel ? "/achat " : "") + this.recoveredField445.method_08874(), this.recoveredField449.method_08905());
+      }
+      if (hypixel) {
          if (var3.contains(this.recoveredField466[0]) || var3.contains(this.recoveredField466[1])) {
             Minecraft.getMinecraft().thePlayer.o.P().setHardcore(false);
          }
 
          if (this.recoveredField439.method_08908() && this.recoveredField453.matcher(var3).matches()) {
             this.minecraft.thePlayer.o.P().setHardcore(true);
-         }
-
-         if (this.recoveredField450.method_08908() && this.matchesAutoGgTrigger(var3)) {
-            this.method_25694("/achat " + this.recoveredField445.method_08874(), this.recoveredField449.method_08905());
          }
 
          if (this.recoveredField440.method_08908() && var3.startsWith("The game starts in 5 seconds!")) {

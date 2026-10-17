@@ -9,6 +9,63 @@ import junit.framework.TestCase;
 import sun.misc.Unsafe;
 
 public class AutoGgTriggersTest extends TestCase {
+    public static class RecordingModule extends HypixelModule {
+        String sent;
+        int sends;
+        float delay;
+
+        @Override public void method_25694(String message, float seconds) {
+            sent = message;
+            sends++;
+            delay = seconds;
+        }
+    }
+
+    public void testChatEventRoutesAutoGgByServer() throws Exception {
+        RecordingModule module = allocate(RecordingModule.class);
+        module.minecraft = allocate(net.minecraft.client.Minecraft.class);
+        module.autoGgCustomTriggers = testSetting("custom", "Iron Sword");
+        module.autoGgUseDefaultTriggers = testSetting("defaults", true);
+        module.recoveredField443 = Arrays.asList("Victory!");
+        module.recoveredField450 = testSetting("auto gg", true);
+        module.recoveredField445 = testSetting("message", "gg");
+        module.recoveredField449 = testSetting("delay", 0.5F);
+        module.recoveredField439 = testSetting("hearts", false);
+        module.recoveredField440 = testSetting("gl", false);
+        module.recoveredField448 = testSetting("wb", false);
+        module.recoveredField441 = testSetting("friend", false);
+        module.recoveredField466 = new String[]{"You have been eliminated!", "Reward Summary"};
+        com.cheatbreaker.client.event.type.ChatMessageEvent death =
+            new com.cheatbreaker.client.event.type.ChatMessageEvent("JustTNT__ was knocked off a high place by ThanCoca's Iron Sword");
+        module.minecraft.currentServerData = new net.minecraft.client.multiplayer.ServerData(false, "test", "localhost:25565", false);
+        module.method_25691(death);
+        assertEquals("gg", module.sent);
+        assertEquals(1, module.sends);
+        assertEquals(0.5F, module.delay);
+        module.minecraft.currentServerData.serverIP = "MC.HYPIXEL.NET";
+        module.method_25691(death);
+        assertEquals("/achat gg", module.sent);
+        assertEquals(2, module.sends);
+        module.minecraft.currentServerData.serverIP = "localhost";
+        module.recoveredField445.recoveredField3086 = "Good game!";
+        module.method_25691(new com.cheatbreaker.client.event.type.ChatMessageEvent("Victory!"));
+        assertEquals("Good game!", module.sent);
+        assertEquals(3, module.sends);
+        module.method_25691(new com.cheatbreaker.client.event.type.ChatMessageEvent("No trigger"));
+        module.recoveredField450.recoveredField3086 = false;
+        module.method_25691(death);
+        module.recoveredField450.recoveredField3086 = true;
+        module.minecraft.currentServerData = null;
+        module.method_25691(death);
+        assertEquals(3, module.sends);
+    }
+
+    private static Setting testSetting(String name, Object value) {
+        Setting setting = new Setting(name);
+        setting.recoveredField3086 = value;
+        return setting;
+    }
+
     private static <T> T allocate(Class<T> type) throws Exception {
         Field field = Unsafe.class.getDeclaredField("theUnsafe");
         field.setAccessible(true);
