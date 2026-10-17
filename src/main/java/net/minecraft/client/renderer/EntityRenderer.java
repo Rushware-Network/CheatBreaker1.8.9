@@ -1131,12 +1131,10 @@ public class EntityRenderer implements IResourceManagerReloadListener {
    }
 
    public void method_29171(float var1) {
-      PerspectiveModule var2 = CheatBreaker.getInstance().getModuleManager().recoveredField1723;
       HurtcamModule hurtcam = CheatBreaker.getInstance().getModuleManager().hurtcam;
       boolean customHurtcam = hurtcam != null && hurtcam.isEnabled();
-      boolean var3 = !customHurtcam && var2.isEnabled() && !var2.recoveredField3171.method_08908() && !var2.method_28796();
-      float var4 = var2.recoveredField3174.method_08905();
-      float hurtAngle = customHurtcam ? 14.0F * hurtcam.getIntensityMultiplier() : (var2.isEnabled() ? var4 : 14.0F);
+      boolean var3 = customHurtcam && !hurtcam.damageAffectsCamera.method_08908() && !hurtcam.method_28796();
+      float hurtAngle = customHurtcam ? hurtcam.hurtCameraIntensity.method_08905() : 14.0F;
       if (!var3) {
          if (this.mc.getRenderViewEntity() instanceof EntityLivingBase) {
             EntityLivingBase var5 = (EntityLivingBase)this.mc.getRenderViewEntity();
@@ -2187,7 +2185,7 @@ public class EntityRenderer implements IResourceManagerReloadListener {
 
       this.method_29171(var1);
       PerspectiveModule var4 = CheatBreaker.getInstance().getModuleManager().recoveredField1723;
-      if (CheatBreaker.getInstance().getModuleManager().recoveredField1717.shouldBobScreen(this.mc.gameSettings.viewBobbing)) {
+      if (this.mc.gameSettings.viewBobbing) {
          if (var4.isEnabled()) {
             var4.method_24319(var1, var4.recoveredField3181);
          } else {

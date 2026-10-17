@@ -1,0 +1,52 @@
+{
+  "change": "Remove Minimal Bobbing from Animations and replace Hurtcam Intensity with only the damage camera settings from Perspective.",
+  "removed": [
+    "Animations: Minimal Bobbing",
+    "Animations: View Bobbing Settings label",
+    "Hurtcam: Intensity"
+  ],
+  "moved_to_hurtcam": [
+    "Damage affects camera",
+    "Hurt Camera Intensity"
+  ],
+  "retained_in_perspective": [
+    "Static Swiftness",
+    "Default FOV",
+    "Aiming Multiplier",
+    "View Bobbing Options",
+    "Third Person Options",
+    "Drag to Look Options"
+  ],
+  "behavior": "Damage camera enablement, intensity and server restriction now use Hurtcam. Screen and hand bobbing remain controlled by Perspective and vanilla View Bobbing.",
+  "build_command": "mvnw.cmd clean package",
+  "build_directory": ".target/maven-source",
+  "java_tests": {
+    "tests": 104,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "recovery_audit": {
+    "run": 7,
+    "passed": true
+  },
+  "source_jar_constructor_linkage_audit": "passed",
+  "deployment": {
+    "version": "CheatBreaker 1.8.9",
+    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
+    "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
+    "jar_sha256": "c0a443e64bcfae592c4ba7586c94d7573191c5aa5219978b333c8af0ff1a2d19",
+    "jar_bytes": 124434939,
+    "compiled_classes": 5146,
+    "native_files_verified": 14,
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261017-133715",
+    "deployed_at": "2026-10-17T13:37:15.628920+08:00"
+  },
+  "manifest_verified": {
+    "id": "CheatBreaker 1.8.9",
+    "jar": "CheatBreaker 1.8.9",
+    "clientVersion": "1.8.9"
+  },
+  "in_game_visual_effect_verified": false,
+  "build_log": ".target/camera-options-build.log"
+}

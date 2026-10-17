@@ -20,7 +20,6 @@ public class AnimationsModule extends AbstractModule {
    public Setting recoveredField3733;
    public Setting recoveredField3734;
    public Setting enchantmentGlint;
-   public Setting minimalBobbing;
 
    public AnimationsModule() {
       super("Animations");
@@ -86,12 +85,5 @@ public class AnimationsModule extends AbstractModule {
       this.recoveredField3731 = new Setting(this, "Health Bar Flashing", "Stops your health bar flashing when you take damage.")
          .setValue(true)
          .method_08916("1.8", "1.7");
-      new Setting(this, "label").setValue("View Bobbing Settings");
-      this.minimalBobbing = new Setting(this, "Minimal Bobbing", "Keep hand bobbing without moving the camera. Requires View Bobbing.")
-         .setValue(false);
-   }
-
-   public boolean shouldBobScreen(boolean viewBobbing) {
-      return viewBobbing && !this.minimalBobbing.method_08908();
    }
 }

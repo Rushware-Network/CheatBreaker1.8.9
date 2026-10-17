@@ -1,7 +1,6 @@
 package com.cheatbreaker.client.module.type;
 
 import com.cheatbreaker.client.config.Setting;
-import com.cheatbreaker.client.config.SettingsDetailLevel;
 import com.cheatbreaker.client.module.AbstractModule;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
@@ -12,16 +11,13 @@ public class PerspectiveModule extends AbstractModule {
    public Setting recoveredField3166;
    public Setting recoveredField3167;
    public Setting recoveredField3168;
+   public Setting recoveredField3173;
+   public Setting recoveredField3178;
    public Setting recoveredField3169;
    public Setting recoveredField3170;
-   public Setting recoveredField3171;
    public float recoveredField3172 = 0.0F;
-   public Setting recoveredField3173;
-   public Setting recoveredField3174;
-   public Setting recoveredField3175;
    public Setting recoveredField3176;
    public Setting recoveredField3177;
-   public Setting recoveredField3178;
    public Setting recoveredField3179;
    public Setting recoveredField3180;
    public Setting recoveredField3181;
@@ -69,7 +65,7 @@ public class PerspectiveModule extends AbstractModule {
       super("Perspective");
       this.method_28821("Allows you to change how your perspective looks.");
       this.method_28807("Freelook", "Snaplook", "360 Perspective");
-      this.method_28823("Drag to Look is disabled.\nDamage affects camera is enabled.", "hypixel");
+      this.method_28823("Drag to Look is disabled.", "hypixel");
       this.setDefaultState(true);
       this.setPreviewLabel("Perspective", 1.0F);
       this.recoveredField3169 = new Setting(this, "label").setValue("Third Person Options");
@@ -91,13 +87,7 @@ public class PerspectiveModule extends AbstractModule {
          .acceptedValues("OFF", "ON", "Only Hand", "Only Screen");
       this.recoveredField3176 = new Setting(this, "Screen Bobbing Intensity").method_08892("%").setValue(100.0F).setMinMax(0.0F, 200.0F);
       this.recoveredField3182 = new Setting(this, "Hand Bobbing Intensity").method_08892("%").setValue(100.0F).setMinMax(0.0F, 200.0F);
-      this.recoveredField3175 = new Setting(this, "label").setValue("Camera Options");
-      this.recoveredField3171 = new Setting(this, "Damage affects camera").setValue(true).method_08914(SettingsDetailLevel.SIMPLE);
-      this.recoveredField3174 = new Setting(this, "Hurt Camera Intensity")
-         .method_08892("%")
-         .setValue(14.0F)
-         .setMinMax(5.0F, 35.0F)
-         .method_08894(() -> this.recoveredField3171.method_08908());
+      new Setting(this, "label").setValue("Camera Options");
       this.recoveredField3178 = new Setting(this, "Static Swiftness", "Determines if your FOV changes as you move.").setValue(false);
       this.recoveredField3168 = new Setting(this, "Default FOV").method_08892(" FOV").setValue(30).setMinMax(30, 110);
       this.recoveredField3173 = new Setting(this, "Aiming Multiplier").method_08892("x").setValue(0.15F).setMinMax(0.15F, 0.75F);
