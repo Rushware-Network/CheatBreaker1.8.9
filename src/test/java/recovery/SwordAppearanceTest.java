@@ -45,7 +45,10 @@ public class SwordAppearanceTest extends TestCase {
     public void testDefaultAndScopeAndOriginalItemData() throws Exception {
         com.cheatbreaker.client.module.type.TextureOptionsModule module =
             new com.cheatbreaker.client.module.type.TextureOptionsModule();
-        assertEquals("Off", module.alwaysDiamondSword.getValue());
+        assertEquals("OFF", module.alwaysDiamondSword.getValue());
+        assertEquals("OFF", module.alwaysDiamondSword.getAcceptedValues()[2]);
+        module.alwaysDiamondSword.setValue("Off", false);
+        assertEquals("OFF", module.alwaysDiamondSword.getValue());
         CheatBreaker.instance.moduleManager = allocate(com.cheatbreaker.client.module.ModuleManager.class);
         CheatBreaker.instance.moduleManager.recoveredField1727 = module;
         for (net.minecraft.item.Item sword : new net.minecraft.item.Item[]{
@@ -57,7 +60,7 @@ public class SwordAppearanceTest extends TestCase {
             original.addEnchantment(net.minecraft.enchantment.Enchantment.recoveredField640, 2);
             net.minecraft.nbt.NBTTagCompound before = (net.minecraft.nbt.NBTTagCompound)original.getTagCompound().copy();
             assertSame(original, com.cheatbreaker.client.util.render.SwordAppearance.forRender(original, true));
-            for (String mode : new String[]{"Self", "All", "Off"}) {
+            for (String mode : new String[]{"Self", "All", "OFF"}) {
                 module.alwaysDiamondSword.setValue(mode, false);
                 for (boolean own : new boolean[]{true, false}) {
                     net.minecraft.item.ItemStack appearance = com.cheatbreaker.client.util.render.SwordAppearance.forRender(original, own);
@@ -73,7 +76,7 @@ public class SwordAppearanceTest extends TestCase {
                     }
                 }
             }
-            module.alwaysDiamondSword.setValue("Off", false);
+            module.alwaysDiamondSword.setValue("OFF", false);
         }
         module.alwaysDiamondSword.setValue("All", false);
         module.enabled = false;

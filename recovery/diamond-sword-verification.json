@@ -1,9 +1,9 @@
 {
-  "change": "Add Pack Tweaks / Always Diamond Sword with Self, All and Off (default Off).",
+  "change": "Add Pack Tweaks / Always Diamond Sword with Self, All and OFF (default OFF).",
   "behavior": {
     "Self": "Local player held swords in first/third person, hotbar, own inventory slots and cursor/drag icons use the active resource pack diamond sword appearance. Other players, sword-holding entities, external container slots, dropped swords and item frames keep actual sword appearance.",
     "All": "All rendered swords use the active resource pack diamond sword appearance, including other players, mobs, inventory icons, dropped items and item frames.",
-    "Off": "Original sword appearance.",
+    "OFF": "Original sword appearance.",
     "disabled_module": "Original sword appearance.",
     "gameplay": "Only a temporary rendering copy is substituted. Real item type, count, damage, NBT, enchantments, tooltip, durability overlay, attributes, combat and networking remain unchanged.",
     "resource_packs": "Appearance is resolved through the current ItemModelMesher and OptiFine custom item model pipeline; no hardcoded texture or separate persistent model cache."
@@ -30,12 +30,12 @@
     "version": "CheatBreaker 1.8.9",
     "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
     "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
-    "jar_sha256": "852e6d863c20615bae51c239ce64401e006546aaf89aa954d481706aa974415f",
-    "jar_bytes": 124438346,
+    "jar_sha256": "2d87934e0c3224a5e48405b6bd0f09764c70503f732b63b00f5ea8a778d1dfc0",
+    "jar_bytes": 124438462,
     "compiled_classes": 5148,
     "native_files_verified": 14,
-    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261017-165554",
-    "deployed_at": "2026-10-17T16:55:55.040964+08:00"
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261017-170011",
+    "deployed_at": "2026-10-17T17:00:11.615467+08:00"
   },
   "manifest_verified": {
     "id": "CheatBreaker 1.8.9",
@@ -43,5 +43,6 @@
     "clientVersion": "1.8.9"
   },
   "in_game_visual_effect_verified": false,
-  "build_log": ".target/diamond-sword-build.log"
+  "build_log": ".target/diamond-sword-off-build.log",
+  "follow_up": "Rename Off to OFF in the default, choices and help text; normalize legacy Off configuration values to OFF when loaded."
 }

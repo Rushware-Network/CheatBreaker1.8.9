@@ -33,9 +33,12 @@ public class TextureOptionsModule extends AbstractModule {
       this.setDefaultState(true);
       new Setting(this, "label").setValue("Sword Options").method_08914(SettingsDetailLevel.SIMPLE);
       this.alwaysDiamondSword = new Setting(this, "Always Diamond Sword",
-            "Changes sword appearance only, using the current resource pack's diamond sword.\n\nSelf: Your held and inventory swords.\nAll: Every sword.\nOff: Actual sword appearance.")
-         .setValue("Off")
-         .acceptedValues("Self", "All", "Off")
+            "Changes sword appearance only, using the current resource pack's diamond sword.\n\nSelf: Your held and inventory swords.\nAll: Every sword.\nOFF: Actual sword appearance.")
+         .setValue("OFF")
+         .acceptedValues("Self", "All", "OFF")
+         .onChange(value -> {
+            if ("OFF".equalsIgnoreCase(String.valueOf(value))) this.alwaysDiamondSword.recoveredField3086 = "OFF";
+         })
          .method_08914(SettingsDetailLevel.SIMPLE);
       new Setting(this, "label").setValue("Glass Options").method_08914(SettingsDetailLevel.SIMPLE);
       this.recoveredField1523 = new Setting(
