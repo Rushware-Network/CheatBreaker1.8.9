@@ -6,6 +6,7 @@ import com.cheatbreaker.client.module.AbstractModule;
 import net.minecraft.util.ResourceLocation;
 
 public class TextureOptionsModule extends AbstractModule {
+   public Setting alwaysDiamondSword;
    public Setting recoveredField1506;
    public Setting recoveredField1507;
    public Setting recoveredField1508;
@@ -30,6 +31,12 @@ public class TextureOptionsModule extends AbstractModule {
       super("Pack Tweaks");
       this.method_28821("Change how specific textures appear.");
       this.setDefaultState(true);
+      new Setting(this, "label").setValue("Sword Options").method_08914(SettingsDetailLevel.SIMPLE);
+      this.alwaysDiamondSword = new Setting(this, "Always Diamond Sword",
+            "Changes sword appearance only, using the current resource pack's diamond sword.\n\nSelf: Your held and inventory swords.\nAll: Every sword.\nOff: Actual sword appearance.")
+         .setValue("Off")
+         .acceptedValues("Self", "All", "Off")
+         .method_08914(SettingsDetailLevel.SIMPLE);
       new Setting(this, "label").setValue("Glass Options").method_08914(SettingsDetailLevel.SIMPLE);
       this.recoveredField1523 = new Setting(
             this,

@@ -2,6 +2,7 @@ package net.minecraft.client.renderer.entity;
 
 import com.cheatbreaker.client.CheatBreaker;
 import com.cheatbreaker.client.module.type.EnchantmentGlintModule;
+import com.cheatbreaker.client.util.render.SwordAppearance;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -92,6 +93,31 @@ public class RenderItem implements IResourceManagerReloadListener {
    public boolean renderModelEmissive;
    public boolean renderItemGui = false;
    private final Map<IBakedModel, int[]> legacyGlintVertices = new IdentityHashMap<>();
+   private Boolean localSwordGuiContext;
+
+   private ItemStack swordAppearance(ItemStack stack, String context) {
+      Minecraft minecraft = Minecraft.getMinecraft();
+      boolean local = false;
+      if (minecraft != null && minecraft.thePlayer != null) {
+         if ("held".equals(context)) {
+            local = this.recoveredField1396 == minecraft.thePlayer;
+         } else if ("inventory".equals(context)) {
+            if (this.localSwordGuiContext != null) {
+               local = this.localSwordGuiContext;
+            } else {
+               local = stack == minecraft.thePlayer.bi.getItemStack();
+               for (ItemStack owned : minecraft.thePlayer.bi.mainInventory) {
+                  if (owned == stack) local = true;
+               }
+            }
+         }
+      }
+      return SwordAppearance.forRender(stack, local);
+   }
+
+   public IBakedModel getAppearanceModel(ItemStack stack, String context) {
+      return this.itemModelMesher.getItemModel(this.swordAppearance(stack, context));
+   }
    private final FloatBuffer legacyGlintPlane = BufferUtils.createFloatBuffer(4);
    private final FloatBuffer legacyGlintMatrix = BufferUtils.createFloatBuffer(16);
 
@@ -664,7 +690,7 @@ public class RenderItem implements IResourceManagerReloadListener {
 
    public void renderItemIntoGUI(ItemStack var1, int var2, int var3) {
       this.renderItemGui = true;
-      IBakedModel var4 = this.itemModelMesher.getItemModel(var1);
+      IBakedModel var4 = this.getAppearanceModel(var1, "inventory");
       if (var1.hasEffect() && this.useLegacyGuiGlint() && this.method_26144("inventory")
          && CheatBreaker.getInstance().getModuleManager().recoveredField1714.isEnabled()) {
          // Define coordinates in GUI space before the item/model transforms. The two
@@ -714,6 +740,16 @@ public class RenderItem implements IResourceManagerReloadListener {
    public boolean shouldRenderItemIn3D(ItemStack var1) {
       IBakedModel var2 = this.itemModelMesher.getItemModel(var1);
       return var2 != null && var2.isGui3d();
+   }
+
+   public void renderItemAndEffectIntoGUI(ItemStack stack, int x, int y, boolean localInventory) {
+      Boolean previous = this.localSwordGuiContext;
+      this.localSwordGuiContext = localInventory;
+      try {
+         this.renderItemAndEffectIntoGUI(stack, x, y);
+      } finally {
+         this.localSwordGuiContext = previous;
+      }
    }
 
    public void renderItemAndEffectIntoGUI(ItemStack var1, int var2, int var3) {
@@ -815,6 +851,8 @@ public class RenderItem implements IResourceManagerReloadListener {
    }
 
    public void method_26135(ItemStack var1, IBakedModel var2, ItemCameraTransforms.TransformType var3, String var4) {
+      ItemStack appearance = this.swordAppearance(var1, var4);
+      if (appearance != var1) var2 = this.itemModelMesher.getItemModel(appearance);
       this.recoveredField1395.bindTexture(TextureMap.locationBlocksTexture);
       this.recoveredField1395.getTexture(TextureMap.locationBlocksTexture).setBlurMipmap(false, false);
       this.preTransform(var1);
@@ -879,6 +917,7 @@ public class RenderItem implements IResourceManagerReloadListener {
 
    public void method_26134(ItemStack var1, IBakedModel var2, String var3) {
       if (var1 != null) {
+         ItemStack appearance = this.swordAppearance(var1, var3);
          GlStateManager.pushMatrix();
          GlStateManager.scale(0.5F, 0.5F, 0.5F);
          if (var2.isBuiltInRenderer()) {
@@ -890,22 +929,22 @@ public class RenderItem implements IResourceManagerReloadListener {
          } else {
             GlStateManager.translate(-0.5F, -0.5F, -0.5F);
             if (Config.isCustomItems()) {
-               var2 = CustomItems.getCustomItemModel(var1, var2, this.modelLocation, false);
+               var2 = CustomItems.getCustomItemModel(appearance, var2, appearance == var1 ? this.modelLocation : null, false);
             }
 
             this.renderModelHasEmissive = false;
-            this.renderModel(var2, var1);
+            this.renderModel(var2, appearance);
             if (this.renderModelHasEmissive) {
                float var4 = OpenGlHelper.lastBrightnessX;
                float var5 = OpenGlHelper.lastBrightnessY;
                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, var5);
                this.renderModelEmissive = true;
-               this.renderModel(var2, var1);
+               this.renderModel(var2, appearance);
                this.renderModelEmissive = false;
                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, var4, var5);
             }
 
-            if (this.method_26144(var3) && var1.hasEffect() && (!Config.isCustomItems() || !CustomItems.renderCustomEffect(this, var1, var2))) {
+            if (this.method_26144(var3) && var1.hasEffect() && (!Config.isCustomItems() || !CustomItems.renderCustomEffect(this, appearance, var2))) {
                this.method_26121(var2, var3);
             }
          }

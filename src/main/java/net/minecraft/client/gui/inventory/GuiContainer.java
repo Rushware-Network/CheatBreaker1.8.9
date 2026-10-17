@@ -327,7 +327,7 @@ public abstract class GuiContainer extends GuiScreen {
          }
 
          GlStateManager.enableDepth();
-         this.k.renderItemAndEffectIntoGUI(var4, var2, var3);
+         this.k.renderItemAndEffectIntoGUI(var4, var2, var3, var1.inventory == this.j.thePlayer.bi);
          this.k.renderItemOverlayIntoGUI(this.q, var4, var2, var3, var8);
       }
 
@@ -495,7 +495,7 @@ public abstract class GuiContainer extends GuiScreen {
       GlStateManager.translate(0.0F, 0.0F, 32.0F);
       recoveredField2942 = 200.0F;
       this.k.zLevel = 200.0F;
-      this.k.renderItemAndEffectIntoGUI(var1, var2, var3);
+      this.k.renderItemAndEffectIntoGUI(var1, var2, var3, true);
       this.k.renderItemOverlayIntoGUI(this.q, var1, var2, var3 - (this.recoveredField2730 == null ? 0 : 8), var4);
       recoveredField2942 = 0.0F;
       this.k.zLevel = 0.0F;

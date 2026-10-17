@@ -55,7 +55,7 @@ public class RenderEntityItem extends Render<EntityItem> {
       GlStateManager.enableBlend();
       GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
       GlStateManager.pushMatrix();
-      IBakedModel var12 = this.itemRenderer.getItemModelMesher().getItemModel(var10);
+      IBakedModel var12 = this.itemRenderer.getAppearanceModel(var10, "dropped");
       int var13 = this.func_177077_a(var1, var2, var4, var6, var9, var12);
 
       for (int var14 = 0; var14 < var13; var14++) {

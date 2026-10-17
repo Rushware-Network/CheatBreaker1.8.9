@@ -1,0 +1,47 @@
+{
+  "change": "Add Pack Tweaks / Always Diamond Sword with Self, All and Off (default Off).",
+  "behavior": {
+    "Self": "Local player held swords in first/third person, hotbar, own inventory slots and cursor/drag icons use the active resource pack diamond sword appearance. Other players, sword-holding entities, external container slots, dropped swords and item frames keep actual sword appearance.",
+    "All": "All rendered swords use the active resource pack diamond sword appearance, including other players, mobs, inventory icons, dropped items and item frames.",
+    "Off": "Original sword appearance.",
+    "disabled_module": "Original sword appearance.",
+    "gameplay": "Only a temporary rendering copy is substituted. Real item type, count, damage, NBT, enchantments, tooltip, durability overlay, attributes, combat and networking remain unchanged.",
+    "resource_packs": "Appearance is resolved through the current ItemModelMesher and OptiFine custom item model pipeline; no hardcoded texture or separate persistent model cache."
+  },
+  "build_command": "mvnw.cmd clean package",
+  "build_directory": ".target/maven-source",
+  "java_tests": {
+    "tests": 112,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "added_tests": [
+    "SwordAppearanceTest.testDefaultAndScopeAndOriginalItemData",
+    "SwordAppearanceTest.testRenderOwnershipAndGuiContextRestoration"
+  ],
+  "recovery_audit": {
+    "run": 7,
+    "passed": true
+  },
+  "source_jar_constructor_linkage_audit": "passed",
+  "packaging": "python tools/package_client.py passed",
+  "deployment": {
+    "version": "CheatBreaker 1.8.9",
+    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
+    "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
+    "jar_sha256": "852e6d863c20615bae51c239ce64401e006546aaf89aa954d481706aa974415f",
+    "jar_bytes": 124438346,
+    "compiled_classes": 5148,
+    "native_files_verified": 14,
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261017-165554",
+    "deployed_at": "2026-10-17T16:55:55.040964+08:00"
+  },
+  "manifest_verified": {
+    "id": "CheatBreaker 1.8.9",
+    "jar": "CheatBreaker 1.8.9",
+    "clientVersion": "1.8.9"
+  },
+  "in_game_visual_effect_verified": false,
+  "build_log": ".target/diamond-sword-build.log"
+}
