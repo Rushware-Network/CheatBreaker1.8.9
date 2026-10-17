@@ -419,7 +419,8 @@ public abstract class Render<T extends Entity> implements IEntityRenderer {
                )
                .getRGB()
             : new Color(255, 255, 255, var9).getRGB(),
-         var7.isEnabled() && var7.recoveredField2918.method_08908()
+         var7.isEnabled() && var7.recoveredField2918.method_08908(),
+         1.0F
       );
       if (var6 != null) {
          if (var8) {

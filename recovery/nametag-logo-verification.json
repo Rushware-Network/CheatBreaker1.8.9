@@ -1,12 +1,13 @@
 {
-  "feature": "Nametag CheatBreaker logo",
+  "feature": "Nametag text and CheatBreaker logo depth consistency",
   "root_causes": [
     "The original renderer requires UUID, username and color data supplied by AssetsWebSocket cosmetics packets; enabling the setting alone cannot create that data, including for the local player.",
     "The sneaking nametag path renders text directly and never draws the logo.",
     "The dedicated icon helper forced depthMask(false), including the visible and sneaking label passes where text writes depth. Later translucent blocks and entities could therefore cover icon pixels while the text remained protected.",
     "That helper disabled blending with raw GL calls, leaving GlStateManager's cached blend state inconsistent for subsequent nametag draws. Raw logo color calls also bypassed its color cache.",
     "The 88x100 logo texture used nearest-neighbor sampling on a 13x7 world-space quad, causing abrupt texel changes during subpixel camera movement.",
-    "Logo shadow and foreground shared z=0 while writing depth. Under small camera tilts such as view bobbing, separately rasterized coplanar quads can quantize to different depth values, causing moving dark fragments in the C. The previous screen-aligned checks did not cover this tilt."
+    "Logo shadow and foreground shared z=0 while writing depth. Under small camera tilts such as view bobbing, separately rasterized coplanar quads can quantize to different depth values, causing moving dark fragments in the C. The previous screen-aligned checks did not cover this tilt.",
+    "Nametag text used FontRenderer.drawString with shadow and foreground both at z=0, reproducing the same coplanar depth conflict as the icon. ASCII, Unicode and formatted decoration vertices all used fixed z=0."
   ],
   "changes": [
     "Use a local logo identity fallback for the current player when service data is absent, without inserting a fabricated entry into the shared identity map.",
@@ -16,22 +17,23 @@
     "Size the normal nametag background using the displayed name, including Nick Hider substitution.",
     "Nametag and Tablist both reference PlayerNametagStyle.LOGO_TEXTURE (client/logo_white.png); normal and sneaking nametags retain their opacity, shadow and subicon settings.",
     "Keep caller depth writes, depth testing and blending for logos, shadows and subicons. Give shadow vertices z=1.0 in label coordinates (behind the face after the Minecraft camera/billboard transform); keep foreground vertices at z=0.0 with the text. This separates shadow and face without changing matrices, GL state, draw count or quad count.",
-    "Use GlStateManager for nametag icon colors and temporarily enable linear texture filtering, restoring the previous texture filters after drawing."
+    "Use GlStateManager for nametag icon colors and temporarily enable linear texture filtering, restoring the previous texture filters after drawing.",
+    "Add an optional shadowDepth argument to FontRenderer.drawString. Nametag requests z=1 for shadow, matching the icon; foreground remains z=0. The existing five-argument API supplies z=0 for normal GUI text. Apply the current vertex depth to ASCII, Unicode, underline and strikethrough geometry. Restore it in finally after the shadow pass, including exception paths. Keep original pass count, width result, colors and XY offsets."
   ],
   "usage": "Enable Nametag and Show CheatBreaker Logo. To view your own label, also enable Shown own Nametag and use third-person view. Remote player recognition still requires service data.",
   "validation": {
     "full_build": "mvnw.cmd clean package: BUILD SUCCESS; exit code 0",
     "build_directory": ".target/maven-source",
-    "java_tests": 112,
+    "java_tests": 116,
     "nametag_logo_tests": 5,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
     "recovery_audit_tests": 7,
     "source_jar_constructor_linkage": "passed",
-    "build_log": ".target/logs/nametag-shadow-build.log",
-    "package_log": ".target/logs/nametag-shadow-package.log",
-    "deploy_log": ".target/logs/nametag-shadow-deploy.log",
+    "build_log": ".target/logs/nametag-text-depth-build.log",
+    "package_log": ".target/logs/nametag-text-depth-package.log",
+    "deploy_log": ".target/logs/nametag-text-depth-deploy.log",
     "jar_sha256_verified": true,
     "manifest_fields_verified": true,
     "native_files_verified": 14,
@@ -41,7 +43,7 @@
       "artifact": ".target/maven-source/CheatBreaker1.8.9.jar",
       "motion_shadow_comparison": {
         "source": ".target/NametagShadowProbe.java",
-        "log": ".target/logs/nametag-shadow-after.log",
+        "log": ".target/logs/nametag-text-icon-regression.log",
         "cases": 192,
         "failures": 0,
         "method": "Actual CB texture and production helper in a 128x128 LWJGL Pbuffer with a 24-bit depth buffer. Perspective near=0.05/far=256; Minecraft camera yaw+180 and billboard transforms; label scale=0.02666667. Compare depth-enabled output with depth-disabled compositing reference (channel tolerance 2/255). Projection zoom keeps fragments large enough to inspect at all distances.",
@@ -77,26 +79,53 @@
       },
       "occlusion_regression": {
         "source": ".target/NametagDepthProbe.java",
-        "log": ".target/logs/nametag-shadow-depth-regression.log",
+        "log": ".target/logs/nametag-text-occlusion-regression.log",
         "cases": 6,
         "failures": 0,
         "coverage": "Later opaque/translucent geometry, 3 screen rotations, fractional positions, transparent holes, modelview/filter/depth/blend state preservation, through-wall no-depth-write behavior and no OpenGL errors.",
         "coordinate_convention": "This screen-space orthographic probe faces +Z toward the viewer, so the shadow uses z=-1; the perspective motion probe uses the actual Minecraft camera convention and production z=+1."
+      },
+      "text_shadow_comparison": {
+        "source": ".target/NametagTextProbe.java",
+        "log": ".target/logs/nametag-text-probe-after.log",
+        "cases": 960,
+        "failures": 0,
+        "method": "Production FontRenderer with actual ASCII/Unicode textures and glyph sizes, using fixed six-unit Latin advances in the probe for deterministic layout. Reuse the perspective camera, distances, yaw/pitch, residual tilt and fractional offsets from the icon motion probe. Compare depth-enabled rendering to depth-disabled compositing reference (channel tolerance 2/255).",
+        "labels": [
+          "Miyanosama",
+          "colored Miyanosama",
+          "bold Miyanosama",
+          "underlined and struck-through Name",
+          "Unicode Chinese player label"
+        ],
+        "coverage": [
+          "Shadow/foreground depth separation and unchanged modelview matrix.",
+          "Later opaque/translucent geometry cannot cover text pixels; text retains depth writes and blending."
+        ],
+        "control": "Set shadowDepth=0 to reproduce the previous behavior: 893/960 cases differ from the depth-disabled reference; expected assertion failure.",
+        "control_log": ".target/logs/nametag-text-coplanar-control.log"
       }
     },
     "game_visuals_verified": false,
-    "remote_service_availability_verified": false
+    "remote_service_availability_verified": false,
+    "nametag_text_depth_tests": 4,
+    "text_unit_coverage": [
+      "Shadow z=1 and face z=0 with original two passes and width result.",
+      "GUI shadow remains z=0 after nametag draw.",
+      "Disabling shadow emits only the foreground pass at z=0.",
+      "A shadow-render failure restores depth before the next GUI draw."
+    ]
   },
   "deployment": {
     "version": "CheatBreaker 1.8.9",
     "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
     "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
-    "jar_sha256": "dfa8de50d5b0b689f8cedc331e5f62fc39a7e208a1bbe0b02af65ae19fd55178",
-    "jar_bytes": 124438353,
+    "jar_sha256": "a0950655bade302eaa62c2d2d46c64dd83804927ebe4083c24045323ad4c11db",
+    "jar_bytes": 124438536,
     "compiled_classes": 5148,
     "native_files_verified": 14,
-    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261017-174553",
-    "deployed_at": "2026-10-17T17:45:53.898615+08:00"
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261017-175300",
+    "deployed_at": "2026-10-17T17:53:00.950347+08:00"
   },
   "shared_logo": {
     "resource": "client/logo_white.png",
@@ -113,9 +142,10 @@
     "render_passes_added": 0,
     "per_frame_allocations_added": 0,
     "gl_state_changes_added": 0,
-    "coordinate_arithmetic_added": 0,
-    "change": "Pass constant depth values directly to existing quad vertices; use double z to match WorldRenderer.pos without additional float-to-double conversions for each vertex.",
-    "unchanged": "Foreground coordinates, depth-write policy, quad count, texture sampling and render passes.",
+    "per_glyph_branches_added": 0,
+    "matrix_operations_added": 0,
+    "change": "Use a primitive vertex-depth field with scalar save/set/restore once around the existing shadow pass; ordinary callers delegate with a constant zero depth. No extra drawing, texture sampling, temporary objects or per-glyph depth decisions.",
+    "unchanged": "Existing glyph/icon geometry counts, sampling, colors, XY positions, widths and caller depth-write policy.",
     "fps_benchmark_run": false
   }
 }

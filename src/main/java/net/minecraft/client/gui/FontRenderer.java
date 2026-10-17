@@ -58,6 +58,7 @@ public class FontRenderer implements IResourceManagerReloadListener {
    public byte[] glyphWidth;
    public boolean italicStyle;
    public float posX;
+   private float posZ;
    public GlBlendState oldBlendState;
 
    public List<String> listFormattedStringToWidth(String var1, int var2) {
@@ -141,6 +142,10 @@ public class FontRenderer implements IResourceManagerReloadListener {
    }
 
    public int drawString(String var1, float var2, float var3, int var4, boolean var5) {
+      return this.drawString(var1, var2, var3, var4, var5, 0.0F);
+   }
+
+   public int drawString(String var1, float var2, float var3, int var4, boolean var5, float shadowDepth) {
       this.enableAlpha();
       if (this.blend) {
          GlStateManager.getBlendState(this.oldBlendState);
@@ -155,7 +160,13 @@ public class FontRenderer implements IResourceManagerReloadListener {
 
       int var7;
       if (var5) {
-         var7 = this.renderString(var1, var2 + 1.0F, var3 + 1.0F, var4, true);
+         float previousZ = this.posZ;
+         this.posZ = shadowDepth;
+         try {
+            var7 = this.renderString(var1, var2 + 1.0F, var3 + 1.0F, var4, true);
+         } finally {
+            this.posZ = previousZ;
+         }
          var7 = Math.max(var7, this.renderString(var1, var2, var3, var4, false));
       } else {
          var7 = this.renderString(var1, var2, var3, var4, false);
@@ -259,10 +270,10 @@ public class FontRenderer implements IResourceManagerReloadListener {
          WorldRenderer var3 = var2.getWorldRenderer();
          GlStateManager.disableTexture2D();
          var3.begin(7, DefaultVertexFormats.POSITION);
-         var3.pos(this.posX, this.posY + this.FONT_HEIGHT / 2, 0.0).endVertex();
-         var3.pos(this.posX + var1, this.posY + this.FONT_HEIGHT / 2, 0.0).endVertex();
-         var3.pos(this.posX + var1, this.posY + this.FONT_HEIGHT / 2 - 1.0F, 0.0).endVertex();
-         var3.pos(this.posX, this.posY + this.FONT_HEIGHT / 2 - 1.0F, 0.0).endVertex();
+         var3.pos(this.posX, this.posY + this.FONT_HEIGHT / 2, this.posZ).endVertex();
+         var3.pos(this.posX + var1, this.posY + this.FONT_HEIGHT / 2, this.posZ).endVertex();
+         var3.pos(this.posX + var1, this.posY + this.FONT_HEIGHT / 2 - 1.0F, this.posZ).endVertex();
+         var3.pos(this.posX, this.posY + this.FONT_HEIGHT / 2 - 1.0F, this.posZ).endVertex();
          var2.draw();
          GlStateManager.enableTexture2D();
       }
@@ -273,10 +284,10 @@ public class FontRenderer implements IResourceManagerReloadListener {
          GlStateManager.disableTexture2D();
          var6.begin(7, DefaultVertexFormats.POSITION);
          int var4 = this.underlineStyle ? -1 : 0;
-         var6.pos(this.posX + var4, this.posY + this.FONT_HEIGHT, 0.0).endVertex();
-         var6.pos(this.posX + var1, this.posY + this.FONT_HEIGHT, 0.0).endVertex();
-         var6.pos(this.posX + var1, this.posY + this.FONT_HEIGHT - 1.0F, 0.0).endVertex();
-         var6.pos(this.posX + var4, this.posY + this.FONT_HEIGHT - 1.0F, 0.0).endVertex();
+         var6.pos(this.posX + var4, this.posY + this.FONT_HEIGHT, this.posZ).endVertex();
+         var6.pos(this.posX + var1, this.posY + this.FONT_HEIGHT, this.posZ).endVertex();
+         var6.pos(this.posX + var1, this.posY + this.FONT_HEIGHT - 1.0F, this.posZ).endVertex();
+         var6.pos(this.posX + var4, this.posY + this.FONT_HEIGHT - 1.0F, this.posZ).endVertex();
          var5.draw();
          GlStateManager.enableTexture2D();
       }
@@ -436,13 +447,13 @@ public class FontRenderer implements IResourceManagerReloadListener {
       float var7 = 7.99F;
       GL11.glBegin(5);
       GL11.glTexCoord2f(var3 / 128.0F, var4 / 128.0F);
-      GL11.glVertex3f(this.posX + var5, this.posY, 0.0F);
+      GL11.glVertex3f(this.posX + var5, this.posY, this.posZ);
       GL11.glTexCoord2f(var3 / 128.0F, (var4 + 7.99F) / 128.0F);
-      GL11.glVertex3f(this.posX - var5, this.posY + 7.99F, 0.0F);
+      GL11.glVertex3f(this.posX - var5, this.posY + 7.99F, this.posZ);
       GL11.glTexCoord2f((var3 + var7 - 1.0F) / 128.0F, var4 / 128.0F);
-      GL11.glVertex3f(this.posX + var7 - 1.0F + var5, this.posY, 0.0F);
+      GL11.glVertex3f(this.posX + var7 - 1.0F + var5, this.posY, this.posZ);
       GL11.glTexCoord2f((var3 + var7 - 1.0F) / 128.0F, (var4 + 7.99F) / 128.0F);
-      GL11.glVertex3f(this.posX + var7 - 1.0F - var5, this.posY + 7.99F, 0.0F);
+      GL11.glVertex3f(this.posX + var7 - 1.0F - var5, this.posY + 7.99F, this.posZ);
       GL11.glEnd();
       return var6;
    }
@@ -691,13 +702,13 @@ public class FontRenderer implements IResourceManagerReloadListener {
          float var11 = var2 ? 1.0F : 0.0F;
          GL11.glBegin(5);
          GL11.glTexCoord2f(var8 / 256.0F, var9 / 256.0F);
-         GL11.glVertex3f(this.posX + var11, this.posY, 0.0F);
+         GL11.glVertex3f(this.posX + var11, this.posY, this.posZ);
          GL11.glTexCoord2f(var8 / 256.0F, (var9 + 15.98F) / 256.0F);
-         GL11.glVertex3f(this.posX - var11, this.posY + 7.99F, 0.0F);
+         GL11.glVertex3f(this.posX - var11, this.posY + 7.99F, this.posZ);
          GL11.glTexCoord2f((var8 + var10) / 256.0F, var9 / 256.0F);
-         GL11.glVertex3f(this.posX + var10 / 2.0F + var11, this.posY, 0.0F);
+         GL11.glVertex3f(this.posX + var10 / 2.0F + var11, this.posY, this.posZ);
          GL11.glTexCoord2f((var8 + var10) / 256.0F, (var9 + 15.98F) / 256.0F);
-         GL11.glVertex3f(this.posX + var10 / 2.0F - var11, this.posY + 7.99F, 0.0F);
+         GL11.glVertex3f(this.posX + var10 / 2.0F - var11, this.posY + 7.99F, this.posZ);
          GL11.glEnd();
          return (var7 - var6) / 2.0F + 1.0F;
       }
