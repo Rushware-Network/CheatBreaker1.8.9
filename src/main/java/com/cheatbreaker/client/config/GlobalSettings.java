@@ -185,6 +185,8 @@ public class GlobalSettings {
          .setValue(20)
          .setMinMax(0, 20)
          .method_08892(" ticks")
+         .method_08915("MEDIUM")
+         .method_08893("fps-inverse-52", "fps-52")
          .method_08894(this.recoveredField563::method_08908);
       this.disableParticlePhysics = new Setting(this.recoveredField571, "Disable Particle Physics",
             "Skip particle collisions with blocks to reduce CPU usage. Particles can pass through blocks.")

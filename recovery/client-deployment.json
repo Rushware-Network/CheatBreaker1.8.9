@@ -2,10 +2,10 @@
   "version": "CheatBreaker 1.8.9",
   "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
   "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
-  "jar_sha256": "2d2a5bd486be9301911d9ea4f038d9ef54d8cc4c9dfdab719cb4ffe50b6d2b9f",
-  "jar_bytes": 124436180,
+  "jar_sha256": "38f3a083f4cccbf518206e6bb32d29c8e765cbc1d52ce66350bb7ddbffba0188",
+  "jar_bytes": 124436190,
   "compiled_classes": 5147,
   "native_files_verified": 14,
-  "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261017-155033",
-  "deployed_at": "2026-10-17T15:50:34.431444+08:00"
+  "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261017-160007",
+  "deployed_at": "2026-10-17T16:00:07.743956+08:00"
 }
