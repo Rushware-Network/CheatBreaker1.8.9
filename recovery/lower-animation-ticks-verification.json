@@ -1,0 +1,57 @@
+{
+  "change": "Add Lower Animation Ticks to CheatBreaker Settings > FPS Boost.",
+  "setting": {
+    "name": "Lower Animation Ticks",
+    "default": 20,
+    "minimum": 0,
+    "maximum": 20,
+    "unit": "ticks",
+    "meaning": "Texture animation updates per second within the existing 20 Hz game tick loop. 20 preserves vanilla speed, 10 is half speed, 0 freezes the current frame.",
+    "master_switch": "Enable FPS Boost; disabling it restores 20 updates per second.",
+    "persistence": "Existing named global setting save/load path."
+  },
+  "implementation": "CheatBreaker TextureAnimationTicker schedules the existing texture-manager tick from Minecraft. This covers atlas sprites and the existing registered custom texture-animation callback, without modifying OptiFine source.",
+  "rate_changes": "Reset fractional progress on rate changes; no frozen-time catch-up or bursts.",
+  "scope": "Material texture animation ticks only; no entity movement, particle, combat, or game simulation tick changes.",
+  "build_command": "mvnw.cmd clean package",
+  "build_directory": ".target/maven-source",
+  "java_tests": {
+    "tests": 110,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "regression_tests": {
+    "class": "TextureAnimationTickerTest",
+    "passed": 4,
+    "coverage": [
+      "Slider registration, integer range, default and FPS Boost visibility",
+      "All 21 rates across 200 game ticks with multiple texture-manager callbacks",
+      "Freeze/resume and rate changes without catch-up",
+      "FPS Boost disabled and client startup preserve vanilla ticking"
+    ]
+  },
+  "recovery_audit": {
+    "run": 7,
+    "passed": true
+  },
+  "source_jar_constructor_linkage_audit": "passed",
+  "deployment": {
+    "version": "CheatBreaker 1.8.9",
+    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
+    "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
+    "jar_sha256": "2d2a5bd486be9301911d9ea4f038d9ef54d8cc4c9dfdab719cb4ffe50b6d2b9f",
+    "jar_bytes": 124436180,
+    "compiled_classes": 5147,
+    "native_files_verified": 14,
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261017-155033",
+    "deployed_at": "2026-10-17T15:50:34.431444+08:00"
+  },
+  "manifest_verified": {
+    "id": "CheatBreaker 1.8.9",
+    "jar": "CheatBreaker 1.8.9",
+    "clientVersion": "1.8.9"
+  },
+  "in_game_visual_effect_verified": false,
+  "build_log": ".target/lower-animation-ticks-build.log"
+}

@@ -2,6 +2,7 @@ package net.minecraft.client;
 
 import com.cheatbreaker.client.CheatBreaker;
 import com.cheatbreaker.client.config.Setting;
+import com.cheatbreaker.client.util.render.TextureAnimationTicker;
 import com.cheatbreaker.client.event.type.LoadWorldEvent;
 import com.cheatbreaker.client.event.type.TickEvent;
 import com.cheatbreaker.client.module.type.AutoTextModule;
@@ -201,6 +202,7 @@ import com.cheatbreaker.client.event.type.WorldChangeEvent;
 import com.cheatbreaker.client.ui.mainmenu.MainMenuMode;
 
 public class Minecraft implements IThreadListener, IPlayerUsage {
+   private final TextureAnimationTicker textureAnimationTicker = new TextureAnimationTicker();
    public LanguageManager mcLanguageManager;
    public int recoveredField3809;
    public List<IResourcePack> defaultResourcePacks;
@@ -528,7 +530,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 
       this.mcProfiler.endStartSection("textures");
       if (!this.recoveredField3824) {
-         this.renderEngine.tick();
+         this.textureAnimationTicker.tick(this.renderEngine);
       }
 
       if (this.currentScreen == null && this.thePlayer != null) {

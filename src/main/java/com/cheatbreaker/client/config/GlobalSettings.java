@@ -109,6 +109,7 @@ public class GlobalSettings {
    public Setting recoveredField563;
    public Setting disableParticlePhysics;
    public Setting tileEntityDistance;
+   public Setting lowerAnimationTicks;
    public Setting recoveredField564;
    public Setting recoveredField565;
    public Setting recoveredField566;
@@ -178,6 +179,12 @@ public class GlobalSettings {
          .method_08892(".0%")
          .method_08915("MEDIUM")
          .method_08893("fps-inverse-52", "fps-52")
+         .method_08894(this.recoveredField563::method_08908);
+      this.lowerAnimationTicks = new Setting(this.recoveredField571, "Lower Animation Ticks",
+            "Texture animation updates per second. 20 ticks uses vanilla speed; 0 ticks freezes texture animations.")
+         .setValue(20)
+         .setMinMax(0, 20)
+         .method_08892(" ticks")
          .method_08894(this.recoveredField563::method_08908);
       this.disableParticlePhysics = new Setting(this.recoveredField571, "Disable Particle Physics",
             "Skip particle collisions with blocks to reduce CPU usage. Particles can pass through blocks.")
