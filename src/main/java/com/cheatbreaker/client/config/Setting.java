@@ -12,6 +12,20 @@ import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
 
 public class Setting {
+   private int maxStringLength = 64;
+
+   public int getMaxStringLength() {
+      return this.maxStringLength;
+   }
+
+   public Setting setMaxStringLength(int length) {
+      if (length < 1) {
+         throw new IllegalArgumentException("String length must be positive");
+      }
+      this.maxStringLength = length;
+      return this;
+   }
+
    public boolean recoveredField3079;
    public BooleanSupplier recoveredField3080;
    public AbstractModule container;

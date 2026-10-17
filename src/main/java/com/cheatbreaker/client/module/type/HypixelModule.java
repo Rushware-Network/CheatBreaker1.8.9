@@ -5,7 +5,6 @@ import com.cheatbreaker.client.config.SettingsDetailLevel;
 import com.cheatbreaker.client.module.AbstractModule;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,7 +18,9 @@ public class HypixelModule extends AbstractModule {
    public Setting recoveredField440;
    public Setting recoveredField441;
    public Setting recoveredField442;
-   public List<String> recoveredField443 = new ArrayList<>();
+   public volatile List<String> recoveredField443 = new ArrayList<>();
+   public Setting autoGgUseDefaultTriggers;
+   public Setting autoGgCustomTriggers;
    public Setting recoveredField444;
    public Setting recoveredField445;
    public Setting recoveredField446;
@@ -76,6 +77,15 @@ public class HypixelModule extends AbstractModule {
          .method_08894(this.recoveredField441::method_08908);
       this.recoveredField446 = new Setting(this, "label").setValue("Auto Chat Options");
       this.recoveredField450 = new Setting(this, "Auto GG").setValue(false);
+      this.autoGgUseDefaultTriggers = new Setting(this, "Use Default GG Triggers",
+         "Use the downloaded triggers as well as your custom triggers.")
+         .setValue(true)
+         .method_08894(this.recoveredField450::method_08908);
+      this.autoGgCustomTriggers = new Setting(this, "GG Triggers String",
+         "Separate phrases with ;. Matches chat text with exact case. Empty entries are ignored.")
+         .setValue("")
+         .setMaxStringLength(512)
+         .method_08894(this.recoveredField450::method_08908);
       this.recoveredField449 = new Setting(this, "Send GG Message Delay")
          .method_08892("s")
          .setValue(0.0F)
@@ -125,11 +135,34 @@ public class HypixelModule extends AbstractModule {
       new Thread(() -> {
          try {
             String var1 = IOUtils.toString(new URL("https://gist.githubusercontent.com/minemanpi/72c38b0023f5062a5f3eba02a5132603/raw/triggers.txt"));
-            this.recoveredField443 = new ArrayList<>(Arrays.asList(var1.split("\n")));
+            List<String> triggers = new ArrayList<>();
+            for (String line : var1.split("\n")) {
+               String trigger = line.trim();
+               if (!trigger.isEmpty()) {
+                  triggers.add(trigger);
+               }
+            }
+            this.recoveredField443 = triggers;
          } catch (Exception var2) {
             var2.printStackTrace();
          }
       }).start();
+   }
+
+   public static boolean matchesCustomGgTrigger(String message, String triggers) {
+      for (String entry : triggers.split("[;；\\r\\n]")) {
+         String trigger = entry.trim();
+         if (!trigger.isEmpty() && message.contains(trigger)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   public boolean matchesAutoGgTrigger(String message) {
+      return matchesCustomGgTrigger(message, this.autoGgCustomTriggers.method_08874())
+         || this.autoGgUseDefaultTriggers.method_08908()
+            && this.recoveredField443.stream().anyMatch(message::contains);
    }
 
    public void method_25691(ChatMessageEvent var1) {
@@ -143,7 +176,7 @@ public class HypixelModule extends AbstractModule {
             this.minecraft.thePlayer.o.P().setHardcore(true);
          }
 
-         if (this.recoveredField450.method_08908() && this.recoveredField443.stream().anyMatch(var3::contains)) {
+         if (this.recoveredField450.method_08908() && this.matchesAutoGgTrigger(var3)) {
             this.method_25694("/achat " + this.recoveredField445.method_08874(), this.recoveredField449.method_08905());
          }
 

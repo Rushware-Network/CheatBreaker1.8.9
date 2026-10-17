@@ -31,7 +31,6 @@ public class SettingTextEditGui extends GuiScreen {
          .recoveredField1589
          .drawString(this.recoveredField2774.method_08911(), var4 / 2 - 70.0F / this.recoveredField2775, var5 / 2 - 17.0F / this.recoveredField2775, 1862270976);
       GL11.glPopMatrix();
-      this.recoveredField2771.setMaxStringLength(64);
       this.recoveredField2771.drawTextBox();
    }
 
@@ -50,6 +49,7 @@ public class SettingTextEditGui extends GuiScreen {
          this.recoveredField2773 = false;
          this.recoveredField2771 = new GuiTextField(299, this.j.fontRendererObj, this.l / 2 - 70, this.m / 2 - 6, 140, 10);
          if (this.recoveredField2774 != null) {
+            this.recoveredField2771.setMaxStringLength(this.recoveredField2774.getMaxStringLength());
             this.recoveredField2771.setText(this.recoveredField2774.method_08874());
          }
 

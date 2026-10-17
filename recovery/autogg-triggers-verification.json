@@ -1,0 +1,53 @@
+{
+  "change": "Add custom AutoGG chat triggers using CheatBreaker's native boolean and string settings, text editor and profile persistence.",
+  "usage": {
+    "module": "Hypixel Collection",
+    "enable": "Enable the module and Auto GG.",
+    "custom_setting": "GG Triggers String",
+    "example": "Victory!;Game Over;游戏结束",
+    "save": "Press Enter in the existing text editor to save; Escape cancels edits.",
+    "matching": "Case-sensitive substring matching; separate phrases with ASCII or full-width semicolons. Trim surrounding whitespace and ignore empty entries.",
+    "maximum_characters": 512,
+    "defaults_setting": "Use Default GG Triggers",
+    "defaults_behavior": "Enabled by default. Disable to use only custom triggers; custom triggers also work when the default trigger download fails.",
+    "scope": "Server address must contain hypixel. Existing outgoing message and delay settings remain in use."
+  },
+  "implementation": [
+    "Expose the custom string in the existing module UI by following its String suffix convention.",
+    "Set the editor length limit before loading existing text so long values survive reopening.",
+    "Keep other string settings at the existing 64-character limit.",
+    "Safely publish the downloaded trigger list and discard blank default entries."
+  ],
+  "build_command": "mvnw.cmd clean package",
+  "build_directory": ".target/maven-source",
+  "build_log": ".target/autogg-build.log",
+  "in_game_effect_verified": false,
+  "java_tests": {
+    "run": 106,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "regression_tests": "AutoGgTriggersTest: 5 passed; native UI registration and visibility, defaults, custom-only mode, offline matching, empty entries, separators, case sensitivity and long text preservation.",
+  "recovery_audit": {
+    "run": 7,
+    "passed": true
+  },
+  "source_jar_constructor_linkage_audit": "passed",
+  "deployment": {
+    "version": "CheatBreaker 1.8.9",
+    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
+    "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
+    "jar_sha256": "27e3531e8101fd27c9429e0f3c9dceb274e3740075f7a9cde42ce509d89a79c6",
+    "jar_bytes": 124435350,
+    "compiled_classes": 5146,
+    "native_files_verified": 14,
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261017-122826",
+    "deployed_at": "2026-10-17T12:28:27.106018+08:00"
+  },
+  "manifest_verified": {
+    "id": "CheatBreaker 1.8.9",
+    "jar": "CheatBreaker 1.8.9",
+    "clientVersion": "1.8.9"
+  }
+}
