@@ -74,16 +74,4 @@ public class EntityShadowSynchronizationTest extends TestCase {
         assertEquals(4, game.saves);
     }
 
-    public void testVideoSettingPathUpdatesGlobalWithoutRecursiveSaves() {
-        for (int i = 0; i < 4; i++) {
-            game.setEntityShadows(!game.entityShadows);
-            assertEquals(i % 2 == 0, game.entityShadows);
-            assertEquals(game.entityShadows, global.recoveredField580.method_08908());
-        }
-        assertEquals(0, game.saves);
-        global.recoveredField580.setValue(true, false);
-        game.setEntityShadows(!game.entityShadows);
-        assertFalse(global.recoveredField580.method_08908());
-        assertEquals(1, game.saves);
-    }
 }

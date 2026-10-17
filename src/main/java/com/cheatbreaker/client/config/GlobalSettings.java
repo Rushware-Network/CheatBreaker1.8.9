@@ -190,7 +190,7 @@ public class GlobalSettings {
             GameSettings settings = Minecraft.getMinecraft().gameSettings;
             boolean enabled = (Boolean)value;
             if (settings.entityShadows != enabled) {
-               settings.setEntityShadows(enabled);
+               settings.entityShadows = enabled;
                settings.saveOptions();
             }
          });

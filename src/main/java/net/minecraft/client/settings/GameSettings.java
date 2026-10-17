@@ -2657,7 +2657,8 @@ public class GameSettings {
       }
 
       if (var1 == GameSettings.Options.ENTITY_SHADOWS) {
-         this.setEntityShadows(!this.entityShadows);
+         this.entityShadows = !this.entityShadows;
+         CheatBreaker.getInstance().getGlobalSettings().recoveredField580.setValue(this.entityShadows);
       }
 
       if (var1 == GameSettings.Options.REALMS_NOTIFICATIONS) {
@@ -2665,16 +2666,6 @@ public class GameSettings {
       }
 
       this.saveOptions();
-   }
-
-   public void setEntityShadows(boolean enabled) {
-      this.entityShadows = enabled;
-      CheatBreaker client = CheatBreaker.getInstance();
-      if (client != null && client.getGlobalSettings() != null
-         && client.getGlobalSettings().recoveredField580 != null
-         && client.getGlobalSettings().recoveredField580.method_08908() != enabled) {
-         client.getGlobalSettings().recoveredField580.setValue(enabled);
-      }
    }
 
    public void switchModelPartEnabled(EnumPlayerModelParts var1) {
