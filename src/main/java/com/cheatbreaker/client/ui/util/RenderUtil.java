@@ -95,7 +95,7 @@ public class RenderUtil {
       GL11.glDisable(3042);
    }
 
-   public static void drawNametagIcon(ResourceLocation resource, float x, float y, float width, float height) {
+   public static void drawNametagIcon(ResourceLocation resource, float x, float y, float width, float height, double z) {
       TextureManager textures = Minecraft.getMinecraft().getTextureManager();
       textures.bindTexture(resource);
       ITextureObject texture = textures.getTexture(resource);
@@ -107,10 +107,10 @@ public class RenderUtil {
          Tessellator tessellator = Tessellator.getInstance();
          WorldRenderer renderer = tessellator.getWorldRenderer();
          renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-         renderer.pos(x, y, 0.0).tex(0.0, 0.0).endVertex();
-         renderer.pos(x, y + height, 0.0).tex(0.0, 1.0).endVertex();
-         renderer.pos(x + width, y + height, 0.0).tex(1.0, 1.0).endVertex();
-         renderer.pos(x + width, y, 0.0).tex(1.0, 0.0).endVertex();
+         renderer.pos(x, y, z).tex(0.0, 0.0).endVertex();
+         renderer.pos(x, y + height, z).tex(0.0, 1.0).endVertex();
+         renderer.pos(x + width, y + height, z).tex(1.0, 1.0).endVertex();
+         renderer.pos(x + width, y, z).tex(1.0, 0.0).endVertex();
          tessellator.draw();
       } finally {
          texture.restoreLastBlurMipmap();

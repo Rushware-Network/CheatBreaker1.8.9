@@ -425,11 +425,12 @@ public abstract class Render<T extends Entity> implements IEntityRenderer {
          if (var8) {
             if (var7.recoveredField2918.method_08908()) {
                GlStateManager.color(0.25F, 0.25F, 0.25F, var9 / 255.0F);
-               RenderUtil.drawNametagIcon(PlayerNametagStyle.LOGO_TEXTURE, -var1 + 1.0F, 1.0F, 13.0F, 7.0F);
+               // One label unit behind the face prevents coplanar depth fighting during view bobbing.
+               RenderUtil.drawNametagIcon(PlayerNametagStyle.LOGO_TEXTURE, -var1 + 1.0F, 1.0F, 13.0F, 7.0F, 1.0F);
             }
 
             GlStateManager.color(1.0F, 1.0F, 1.0F, var9 / 255.0F);
-            RenderUtil.drawNametagIcon(PlayerNametagStyle.LOGO_TEXTURE, -var1, 0.0F, 13.0F, 7.0F);
+            RenderUtil.drawNametagIcon(PlayerNametagStyle.LOGO_TEXTURE, -var1, 0.0F, 13.0F, 7.0F, 0.0F);
 
             if (var7.recoveredField2921.method_08908() && !var6.method_26422().equalsIgnoreCase("")) {
                if (var7.recoveredField2918.method_08908()) {
@@ -439,7 +440,8 @@ public abstract class Render<T extends Entity> implements IEntityRenderer {
                      -(var1 * 2) / 2.0F + 10.0F + 0.33333334F,
                      -1.6666666F,
                      4.3333335F,
-                     4.3333335F
+                     4.3333335F,
+                     1.0F
                   );
                }
 
@@ -449,7 +451,8 @@ public abstract class Render<T extends Entity> implements IEntityRenderer {
                   -(var1 * 2) / 2.0F + 10.0F,
                   -2.0F,
                   4.3333335F,
-                  4.3333335F
+                  4.3333335F,
+                  0.0F
                );
             }
          }
