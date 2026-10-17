@@ -184,9 +184,16 @@ public class GlobalSettings {
          .setValue(false)
          .method_08894(this.recoveredField563::method_08908);
       this.recoveredField580 = new Setting(this.recoveredField571, "Entity Shadows", "Draws a shadow below entities.")
-         .setValue(true)
+         .setValue(Minecraft.getMinecraft().gameSettings.entityShadows)
          .method_08894(this.recoveredField563::method_08908)
-         .onChange(var0 -> Minecraft.getMinecraft().getRenderManager().options.entityShadows = Boolean.parseBoolean(var0.toString()));
+         .onChange(value -> {
+            GameSettings settings = Minecraft.getMinecraft().gameSettings;
+            boolean enabled = (Boolean)value;
+            if (settings.entityShadows != enabled) {
+               settings.setEntityShadows(enabled);
+               settings.saveOptions();
+            }
+         });
       this.recoveredField557 = new Setting(this.recoveredField571, "Hide Grounded Arrows").setValue(false).method_08894(this.recoveredField563::method_08908);
       this.recoveredField583 = new Setting(this.recoveredField571, "Hide Stuck Arrows").setValue(false).method_08894(this.recoveredField563::method_08908);
       this.recoveredField518 = new Setting(this.recoveredField571, "Hide Moving Arrows").setValue(false).method_08894(this.recoveredField563::method_08908);
