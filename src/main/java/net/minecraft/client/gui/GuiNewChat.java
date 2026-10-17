@@ -144,56 +144,51 @@ public class GuiNewChat extends Gui {
    }
 
    public void setChatLine(IChatComponent var1, int var2, int var3, boolean var4) {
-      if (var2 != 0) {
+      if (var2 != 0 && !var4) {
          this.deleteChatLine(var2);
       }
 
+      ChatModule chatModule = CheatBreaker.getInstance().getModuleManager().chatModule;
+      boolean unlimited = chatModule.isEnabled() && chatModule.recoveredField828.method_08908();
+      boolean clientMessage = var1 instanceof ChatComponentText && ((ChatComponentText)var1).method_07468();
       int var5 = MathHelper.floor_float(this.method_03268() / this.getChatScale());
-      List var6 = GuiUtilRenderComponents.splitText(var1, var5, this.mc.fontRendererObj, false, false);
+      List<IChatComponent> var6 = GuiUtilRenderComponents.splitText(var1, var5, this.mc.fontRendererObj, false, false);
       boolean var7 = this.getChatOpen();
 
-      for (IChatComponent var9 : (Iterable<IChatComponent>)(Iterable<?>)(var6)) {
+      for (IChatComponent var9 : var6) {
          if (var7 && this.scrollPos > 0) {
             this.isScrolled = true;
             this.scroll(1);
          }
 
-         ChatLine var10 = new ChatLine(var3, var1, var2);
-         ClientChatLine var11 = ClientChatLine.method_28278(var10);
-         if (var1 instanceof ChatComponentText) {
-            if (((ChatComponentText)var1).method_07468()) {
-               var11.method_28279(true);
-               this.drawnChatLines.add(0, var11);
-            }
-
-            if (!((ChatComponentText)var1).method_07468()) {
-               this.drawnChatLines.add(0, new ChatLine(var3, var9, var2));
-            }
-         }
+         this.drawnChatLines.add(0, createChatLine(var3, var9, var2, clientMessage));
       }
 
-      while (this.drawnChatLines.size() > 100) {
-         this.drawnChatLines.remove(this.drawnChatLines.size() - 1);
+      if (!unlimited) {
+         while (this.drawnChatLines.size() > 100) {
+            this.drawnChatLines.remove(this.drawnChatLines.size() - 1);
+         }
       }
 
       if (!var4) {
-         ChatLine var12 = new ChatLine(var3, var1, var2);
-         ClientChatLine var13 = ClientChatLine.method_28278(var12);
-         if (var1 instanceof ChatComponentText) {
-            if (((ChatComponentText)var1).method_07468()) {
-               var13.method_28279(true);
-               this.chatLines.add(0, var13);
+         this.chatLines.add(0, createChatLine(var3, var1, var2, clientMessage));
+         if (!unlimited) {
+            while (this.chatLines.size() > 100) {
+               this.chatLines.remove(this.chatLines.size() - 1);
             }
-         } else {
-            this.drawnChatLines.add(0, new ChatLine(var3, var1, var2));
-         }
-
-         while (this.chatLines.size() > 100) {
-            this.chatLines.remove(this.chatLines.size() - 1);
          }
       }
 
       this.method_03279(var6);
+   }
+
+   private static ChatLine createChatLine(int updateCounter, IChatComponent component, int id, boolean clientMessage) {
+      if (clientMessage) {
+         ClientChatLine line = new ClientChatLine(updateCounter, component, id);
+         line.method_28279(true);
+         return line;
+      }
+      return new ChatLine(updateCounter, component, id);
    }
 
    public void printChatMessageWithOptionalDeletion(IChatComponent var1, int var2) {

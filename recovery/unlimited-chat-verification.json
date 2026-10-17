@@ -1,0 +1,56 @@
+{
+  "feature": "Chat module Unlimited Chat history",
+  "root_causes": [
+    "The Unlimited Chat setting was registered but never read by GuiNewChat; both history buffers were always trimmed to 100 lines.",
+    "Ordinary ChatComponentText messages were not added to chatLines, and other component types were inserted into drawnChatLines instead of the persistent history buffer.",
+    "Refreshing nonzero-ID messages removed entries from the history being iterated.",
+    "Client-marked wrapped messages reused the full original component for every rendered line."
+  ],
+  "behavior": [
+    "With the Chat module and Unlimited Chat enabled, both original-message history and wrapped display lines can exceed 100 entries.",
+    "With either disabled, incoming messages trim both buffers to the newest 100 entries.",
+    "All component types are recorded once in original-message history; wrapped display lines retain client markers.",
+    "Refreshing chat rebuilds display lines without deleting original-message history; incoming nonzero IDs still replace previous messages."
+  ],
+  "scope": "Client chat scrollback only. Outgoing message length, server restrictions and Clear Chat on Relog behavior are unchanged. Already discarded history cannot be recovered.",
+  "validation": {
+    "command": "mvnw.cmd clean package",
+    "build_directory": ".target/maven-source",
+    "build_success": true,
+    "java_tests": {
+      "tests": 121,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "chat_regression_tests": 5,
+    "chat_coverage": [
+      "250-message retention and scrollback after refresh",
+      "Newest-100 limit with setting off",
+      "Newest-100 limit with module off",
+      "Trimming after switching off",
+      "Translated messages, wrapped client markers, refresh with nonzero IDs, replacement, deletion and clear"
+    ],
+    "recovery_audit": {
+      "checks": 7,
+      "failures": 0,
+      "errors": 0,
+      "passed": true,
+      "meaning": "Recovery audit only; does not assert successful source compilation or runtime equivalence of cleaned source"
+    },
+    "source_jar_constructor_linkage": "passed",
+    "log": ".target/unlimited-chat-build.log",
+    "game_visuals_verified": false
+  },
+  "deployment": {
+    "version": "CheatBreaker 1.8.9",
+    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
+    "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
+    "jar_sha256": "83fef9c65d3da78908ad0fd4530d140e08da41d903a222b5806041cd3d65e715",
+    "jar_bytes": 124438611,
+    "compiled_classes": 5148,
+    "native_files_verified": 14,
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261017-185428",
+    "deployed_at": "2026-10-17T18:54:28.875322+08:00"
+  }
+}
