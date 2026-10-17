@@ -99,9 +99,10 @@ public class RenderUtil {
       TextureManager textures = Minecraft.getMinecraft().getTextureManager();
       textures.bindTexture(resource);
       ITextureObject texture = textures.getTexture(resource);
-      boolean depthMask = GlStateManager.depthState.maskEnabled;
       texture.setBlurMipmap(true, false);
-      GlStateManager.depthMask(false);
+      // Match the label pass: the visible pass must write depth so translucent
+      // blocks rendered later cannot blend over the icon while sparing the text.
+      // The through-wall pass already disables depth writes at the call site.
       try {
          Tessellator tessellator = Tessellator.getInstance();
          WorldRenderer renderer = tessellator.getWorldRenderer();
@@ -112,7 +113,6 @@ public class RenderUtil {
          renderer.pos(x + width, y, 0.0).tex(1.0, 0.0).endVertex();
          tessellator.draw();
       } finally {
-         GlStateManager.depthMask(depthMask);
          texture.restoreLastBlurMipmap();
       }
    }
