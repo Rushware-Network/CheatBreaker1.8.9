@@ -1,62 +1,56 @@
 package com.cheatbreaker.client.ui.util;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.imageio.ImageIO;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
-public final class BarrierBlockPreview {
+/** Composed once on load, then rendered through the standard single-texture icon path. */
+public final class BarrierBlockPreview extends AbstractTexture {
+   public static final ResourceLocation ICON = new ResourceLocation("client/icons/mods/barrier_block_preview.png");
    private static final ResourceLocation BARRIER = new ResourceLocation("textures/items/barrier.png");
    private static final ResourceLocation GLASS = new ResourceLocation("textures/blocks/glass.png");
+   private static final int SIZE = 32;
 
    private BarrierBlockPreview() {}
 
-   public static void draw(float x, float y, float width, float height) {
-      float middle = x + width / 2.0F;
-      GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_CURRENT_BIT | GL11.GL_LINE_BIT);
-      try {
-         GL11.glEnable(GL11.GL_TEXTURE_2D);
-         GL11.glEnable(GL11.GL_BLEND);
-         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-         GL11.glDisable(GL11.GL_ALPHA_TEST);
-         GL11.glDisable(GL11.GL_CULL_FACE);
-         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+   public static void prepare() {
+      TextureManager textures = Minecraft.getMinecraft().getTextureManager();
+      if (textures.getTexture(ICON) == null) {
+         // TextureManager also reloads this object when the resource pack changes.
+         textures.loadTexture(ICON, new BarrierBlockPreview());
+      }
+   }
 
-         // Left half of the original barrier texture, without stretching.
-         Minecraft.getMinecraft().getTextureManager().bindTexture(BARRIER);
-         GL11.glBegin(GL11.GL_QUADS);
-         GL11.glTexCoord2f(0.0F, 0.0F);
-         GL11.glVertex2f(x, y);
-         GL11.glTexCoord2f(0.0F, 1.0F);
-         GL11.glVertex2f(x, y + height);
-         GL11.glTexCoord2f(0.5F, 1.0F);
-         GL11.glVertex2f(middle, y + height);
-         GL11.glTexCoord2f(0.5F, 0.0F);
-         GL11.glVertex2f(middle, y);
-         GL11.glEnd();
+   @Override
+   public void loadTexture(IResourceManager resources) throws IOException {
+      BufferedImage barrier = readTexture(resources, BARRIER);
+      BufferedImage glass = readTexture(resources, GLASS);
+      BufferedImage icon = new BufferedImage(SIZE, SIZE, BufferedImage.TYPE_INT_ARGB);
+      for (int y = 0; y < SIZE; y++) {
+         for (int x = 0; x < SIZE; x++) {
+            BufferedImage source = x < SIZE / 2 ? barrier : glass;
+            int color = source.getRGB(x * source.getWidth() / SIZE, y * source.getHeight() / SIZE);
+            // Match the original center line's raster position, immediately left of the midpoint.
+            icon.setRGB(x, y, x == SIZE / 2 - 1 ? 0xFFB8C2CC : color);
+         }
+      }
+      TextureUtil.uploadTextureImage(this.getGlTextureId(), icon);
+   }
 
-         // Right half of regular glass, independent of the selected glass color.
-         Minecraft.getMinecraft().getTextureManager().bindTexture(GLASS);
-         GL11.glBegin(GL11.GL_QUADS);
-         GL11.glTexCoord2f(0.5F, 0.0F);
-         GL11.glVertex2f(middle, y);
-         GL11.glTexCoord2f(0.5F, 1.0F);
-         GL11.glVertex2f(middle, y + height);
-         GL11.glTexCoord2f(1.0F, 1.0F);
-         GL11.glVertex2f(x + width, y + height);
-         GL11.glTexCoord2f(1.0F, 0.0F);
-         GL11.glVertex2f(x + width, y);
-         GL11.glEnd();
-
-         // A one-pixel vertical divider down the center.
-         GL11.glDisable(GL11.GL_TEXTURE_2D);
-         GL11.glLineWidth(1.0F);
-         GL11.glColor4f(0.72F, 0.76F, 0.80F, 1.0F);
-         GL11.glBegin(GL11.GL_LINES);
-         GL11.glVertex2f(middle, y);
-         GL11.glVertex2f(middle, y + height);
-         GL11.glEnd();
-      } finally {
-         GL11.glPopAttrib();
+   private static BufferedImage readTexture(IResourceManager resources, ResourceLocation location) throws IOException {
+      try (InputStream input = resources.getResource(location).getInputStream()) {
+         BufferedImage image = ImageIO.read(input);
+         if (image == null) {
+            throw new IOException("Invalid preview texture: " + location);
+         }
+         return image;
       }
    }
 }

@@ -1,0 +1,73 @@
+{
+  "feature": "Barrier Block rendering performance review and preview texture caching",
+  "icon_before": {
+    "texture_binds_per_draw": 2,
+    "draw_calls_per_draw": 3,
+    "attribute_push_pop_per_draw": true
+  },
+  "icon_after": {
+    "texture_binds_per_draw": 1,
+    "draw_calls_per_draw": 1,
+    "attribute_push_pop_per_draw": false,
+    "draw_path": "Same generic ICON rendering as other modules; no Barrier-specific code or resource work in handleDrawElement.",
+    "composition": "Only on initial texture registration or resource reload.",
+    "cached_rgba_texture_bytes": 4096
+  },
+  "native_cache_audit": {
+    "draws": 60000,
+    "binds_per_draw": 1,
+    "steady_resource_reads": 0,
+    "steady_texture_uploads": 0,
+    "java_allocated_bytes_per_20000_draws": [
+      1568,
+      0,
+      0
+    ],
+    "texture_objects_after_reload": 1,
+    "reload_verified": true,
+    "opengl_error": false
+  },
+  "native_audit_scope": "Offscreen OpenGL icon rendering, not game FPS. A 5000-draw warmup preceded three measured batches of 20000 draws. The first batch recorded the reported small allocation total; both later batches recorded zero.",
+  "cache_lifecycle_checks": "1000 repeated prepare calls reused one loaded texture. Initial load read and closed two source streams. Resource reload read and closed two more, reusing the same texture object and GL ID.",
+  "audit_source": ".target/tools/BarrierCacheAudit.java",
+  "audit_log": ".target/barrier-block-native-cache-audit.log",
+  "world_render_review": "Selected glass states are cached during existing chunk-cache misses and the ordinary chunk meshes are reused between updates. No new tick/render listeners, world scans, separate draw passes or per-barrier model allocations.",
+  "item_render_review": "Aliases the selected existing model in the ordinary item model cache. No extra draw-time model branch or ItemStack copy was added.",
+  "particle_review": "Creative barrier marker generation is skipped and the factory returns before allocating markers. Existing marker lists are cleaned once on enable.",
+  "change_cost": "Appearance changes rebuild chunks once; duplicate selections and changes while disabled do not rebuild. Initial icon load and resource reload have a small one-time composition/upload cost.",
+  "limits": "Absolute zero performance impact versus invisible barriers cannot be guaranteed: visible glass geometry and translucency have normal GPU and mesh costs. No in-game FPS benchmark was performed.",
+  "validation": {
+    "build_command": "mvnw.cmd clean package",
+    "build_directory": ".target/maven-source",
+    "build_result": "BUILD SUCCESS",
+    "java_tests": {
+      "tests": 130,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "recovery_audit_tests": 7,
+    "recovery_audit_passed": true,
+    "source_jar_constructor_linkage_audit": "passed",
+    "source_packaged_and_deployed_jar_sha256_verified": true,
+    "native_files_verified": 14,
+    "build_log": ".target/barrier-block-performance-build.log",
+    "in_game_verified": false
+  },
+  "manifest_verified": {
+    "id": "CheatBreaker 1.8.9",
+    "jar": "CheatBreaker 1.8.9",
+    "clientVersion": "1.8.9"
+  },
+  "deployment": {
+    "version": "CheatBreaker 1.8.9",
+    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
+    "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
+    "jar_sha256": "c4b03bc3412b27a4de939ec84470f4ccf1140cd85b76c6dee226c14339c6872c",
+    "jar_bytes": 124445568,
+    "compiled_classes": 5150,
+    "native_files_verified": 14,
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261019-134516",
+    "deployed_at": "2026-10-19T13:45:16.872146+08:00"
+  }
+}

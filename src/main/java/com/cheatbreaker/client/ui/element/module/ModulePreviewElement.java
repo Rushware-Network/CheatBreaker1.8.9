@@ -182,13 +182,7 @@ public class ModulePreviewElement extends AbstractModulesGuiElement {
             float var25 = this.recoveredField3800.getPreviewIconWidth();
             float var16 = this.recoveredField3800.getPreviewIconHeight();
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            if (this.recoveredField3800 == CheatBreaker.getInstance().getModuleManager().barrierBlock) {
-               BarrierBlockPreview.draw(
-                  this.x + this.width / 2 - var25 / 2.0F + var8,
-                  this.y + var7 + this.height / 2 - 26 - var16 / 2.0F,
-                  var25, var16
-               );
-            } else if (this.recoveredField3800 == CheatBreaker.getInstance().getModuleManager().recoveredField1718) {
+            if (this.recoveredField3800 == CheatBreaker.getInstance().getModuleManager().recoveredField1718) {
                // Vanilla server-list full signal: the first 10x8 sprite at (0, 176).
                Minecraft.getMinecraft().getTextureManager().bindTexture(Gui.icons);
                Gui.drawScaledCustomSizeModalRect(
@@ -352,6 +346,10 @@ public class ModulePreviewElement extends AbstractModulesGuiElement {
       super(var3);
       recoveredField3798 = this;
       this.recoveredField3800 = var2;
+      if (var2 == CheatBreaker.getInstance().getModuleManager().barrierBlock) {
+         BarrierBlockPreview.prepare();
+         var2.setPreviewIcon(BarrierBlockPreview.ICON, 32, 32);
+      }
       this.recoveredField3795 = var1;
       boolean var4 = var2 != CheatBreaker.getInstance().getModuleManager().minmap && var2 != CheatBreaker.getInstance().getModuleManager().notifications;
       String var5 = var2.getGuiAnchor() == null ? (var2.method_28866() ? "Disable" : "Enable") : (var2.method_28866() ? "Hide from HUD" : "Add to HUD");

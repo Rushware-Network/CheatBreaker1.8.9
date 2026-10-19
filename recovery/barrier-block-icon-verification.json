@@ -1,27 +1,27 @@
 {
   "feature": "Barrier Block vertical split module preview icon",
-  "implementation": "BarrierBlockPreview draws the left half of the original barrier texture and the right half of regular glass at their original proportions, separated by a centered vertical line in the existing 32x32 ICON preview.",
+  "implementation": "BarrierBlockPreview is an AbstractTexture registered when the module card is constructed. It composes a 32x32 texture on first load and resource reload; the existing generic ICON path draws one textured quad thereafter.",
   "divider": {
     "direction": "vertical, top to bottom at the horizontal center",
-    "width_pixels": 1,
     "color_rgba": [
       0.72,
       0.76,
       0.8,
       1.0
-    ]
+    ],
+    "width_pixels_at_32px_icon": 1
   },
   "native_preview": {
     "path": ".target/barrier-block-icon-preview.png",
-    "rendered_with": "LWJGL Pbuffer and the actual BarrierBlockPreview class from the built source JAR",
+    "rendered_with": "LWJGL Pbuffer, actual cached BarrierBlockPreview texture from the built JAR, and the standard RenderUtil icon draw path",
     "backgrounds": [
       "dark",
       "light"
     ],
     "visually_inspected": true,
     "opengl_error": false,
-    "blend_and_alpha_state_restoration_verified": true,
-    "log": ".target/barrier-block-icon-preview.log"
+    "log": ".target/barrier-block-native-cache-audit.log",
+    "uses_standard_icon_draw_path": true
   },
   "validation": {
     "build_command": "mvnw.cmd clean package",
@@ -38,7 +38,7 @@
     "source_jar_constructor_linkage_audit": "passed",
     "source_packaged_and_deployed_jar_sha256_verified": true,
     "native_files_verified": 14,
-    "build_log": ".target/barrier-block-icon-build.log",
+    "build_log": ".target/barrier-block-performance-build.log",
     "in_game_verified": false
   },
   "manifest_verified": {
@@ -50,12 +50,12 @@
     "version": "CheatBreaker 1.8.9",
     "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
     "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
-    "jar_sha256": "c7d5f7d01e0c10407169a1ef4e33f349c1f107f7e877df69eee6e758fba6ceec",
-    "jar_bytes": 124444861,
+    "jar_sha256": "c4b03bc3412b27a4de939ec84470f4ccf1140cd85b76c6dee226c14339c6872c",
+    "jar_bytes": 124445568,
     "compiled_classes": 5150,
     "native_files_verified": 14,
-    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261019-133027",
-    "deployed_at": "2026-10-19T13:30:27.825668+08:00"
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261019-134516",
+    "deployed_at": "2026-10-19T13:45:16.872146+08:00"
   },
   "left_half": "textures/items/barrier.png",
   "right_half": "textures/blocks/glass.png (regular glass)"
