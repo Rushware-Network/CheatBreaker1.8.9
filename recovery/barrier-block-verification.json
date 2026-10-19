@@ -1,41 +1,76 @@
 {
-  "feature": "Barrier Block module placeholder",
-  "scope": "Module registration, existing barrier item preview icon, settings entry, inherited Toggle Mod Keybind and configuration persistence. Glass rendering is reserved for a later implementation.",
+  "feature": "Barrier Block glass rendering",
   "default_enabled": false,
-  "default_toggle_keybind": "Unbound (0); existing keyboard and mouse binding handling",
-  "settings_notice": "Glass Rendering (Coming Soon)",
-  "rendering_implemented": false,
+  "default_glass_type": "Regular",
+  "glass_types": [
+    "Regular",
+    "Cyan",
+    "Pink",
+    "White",
+    "Orange",
+    "Magenta",
+    "Light Blue",
+    "Yellow",
+    "Lime",
+    "Gray",
+    "Light Gray",
+    "Purple",
+    "Blue",
+    "Brown",
+    "Green",
+    "Red",
+    "Black"
+  ],
+  "default_toggle_keybind": "Unbound (0); inherited keyboard and mouse bindings and saved profile settings",
+  "description": "Barrier blocks use the selected resource-pack glass appearance while enabled. Disabling restores invisible barriers. Collision, hardness, lighting properties and world states are unchanged.",
+  "rendering_implemented": true,
+  "implementation": {
+    "model": "Alias the existing baked glass model in BlockModelShapes for the original barrier block state; rebuild the alias on resource reload.",
+    "layers": "Regular uses the existing CUTOUT layer; stained glass uses TRANSLUCENT.",
+    "culling": "Skip shared barrier faces and faces against opaque blocks.",
+    "updates": "Stop asynchronous chunk compilation before changing shared model state; rebuild chunk renderers only when the effective appearance changes.",
+    "performance": "No added per-frame listeners, world scans, render passes or per-block model allocations. Other block model lookups are unchanged. Only barrier render queries read cached appearance state.",
+    "performance_limit": "Visible barrier geometry has normal glass mesh, rasterization and translucency costs; changing appearance triggers a one-time chunk rebuild. No in-game FPS benchmark was performed."
+  },
   "validation": {
     "build_command": "mvnw.cmd clean package",
     "build_directory": ".target/maven-source",
     "build_result": "BUILD SUCCESS",
     "java_tests": {
-      "tests": 121,
+      "tests": 126,
       "failures": 0,
       "errors": 0,
       "skipped": 0
     },
+    "barrier_rendering_tests": [
+      "testExistingDispatcherRendersSelectedModelWithOriginalBarrierState",
+      "testInternalAndOpaqueFacesAreCulledWithoutChangingPhysics",
+      "testAllSeventeenChoicesResolveToExistingGlassModels",
+      "testResourceReloadRebindsToFreshBakedModel",
+      "testToggleAndTextureChangesRebuildOnlyWhenNeeded"
+    ],
     "recovery_audit_tests": 7,
     "recovery_audit_passed": true,
     "source_jar_constructor_linkage_audit": "passed",
-    "module_class_and_preview_resource_packaged": true,
-    "build_log": ".target/barrier-block-build.log",
-    "in_game_verified": false
-  },
-  "deployment": {
-    "version": "CheatBreaker 1.8.9",
-    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
-    "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
-    "jar_sha256": "d2fb0596e4fa2f89844601ec0638d09f6cd9a2ce47118e3d05226de8dbf8a1b8",
-    "jar_bytes": 124439527,
-    "compiled_classes": 5149,
+    "source_packaged_and_deployed_jar_sha256_verified": true,
     "native_files_verified": 14,
-    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261019-125427",
-    "deployed_at": "2026-10-19T12:54:28.062091+08:00"
+    "build_log": ".target/barrier-block-rendering-build.log",
+    "in_game_verified": false
   },
   "manifest_verified": {
     "id": "CheatBreaker 1.8.9",
     "jar": "CheatBreaker 1.8.9",
     "clientVersion": "1.8.9"
+  },
+  "deployment": {
+    "version": "CheatBreaker 1.8.9",
+    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
+    "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
+    "jar_sha256": "4b8d352a4e707ad83b2266d9135d437a470c27d86175858cd204c173d5aed1fd",
+    "jar_bytes": 124442123,
+    "compiled_classes": 5149,
+    "native_files_verified": 14,
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261019-130334",
+    "deployed_at": "2026-10-19T13:03:34.922074+08:00"
   }
 }

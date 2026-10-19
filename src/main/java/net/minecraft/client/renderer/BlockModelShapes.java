@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockBarrier;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.BlockCactus;
 import net.minecraft.block.BlockColored;
@@ -110,6 +111,17 @@ public class BlockModelShapes {
 
       for (Entry var2 : this.blockStateMapper.putAllStateModelLocations().entrySet()) {
          this.bakedModelStore.put((IBlockState)var2.getKey(), this.modelManager.getModel((ModelResourceLocation)var2.getValue()));
+      }
+      this.updateBarrierModel();
+   }
+
+   public void updateBarrierModel() {
+      IBlockState renderState = ((BlockBarrier)Blocks.barrier).getRenderState();
+      if (renderState == null) {
+         this.bakedModelStore.remove(Blocks.barrier.getDefaultState());
+      } else {
+         // Alias the existing baked glass model; normal chunk lookup needs no extra checks or allocations.
+         this.bakedModelStore.put(Blocks.barrier.getDefaultState(), this.getModelForState(renderState));
       }
    }
 
