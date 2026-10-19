@@ -9,6 +9,7 @@ import com.cheatbreaker.client.ui.element.AbstractModulesGuiElement;
 import com.cheatbreaker.client.ui.element.AbstractScrollableElement;
 import com.cheatbreaker.client.ui.module.CBModulesGui;
 import com.cheatbreaker.client.ui.util.RenderUtil;
+import com.cheatbreaker.client.ui.util.BarrierBlockPreview;
 import com.cheatbreaker.client.ui.util.font.CBFontRenderer;
 import java.util.Objects;
 import net.minecraft.client.Minecraft;
@@ -181,7 +182,13 @@ public class ModulePreviewElement extends AbstractModulesGuiElement {
             float var25 = this.recoveredField3800.getPreviewIconWidth();
             float var16 = this.recoveredField3800.getPreviewIconHeight();
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            if (this.recoveredField3800 == CheatBreaker.getInstance().getModuleManager().recoveredField1718) {
+            if (this.recoveredField3800 == CheatBreaker.getInstance().getModuleManager().barrierBlock) {
+               BarrierBlockPreview.draw(
+                  this.x + this.width / 2 - var25 / 2.0F + var8,
+                  this.y + var7 + this.height / 2 - 26 - var16 / 2.0F,
+                  var25, var16
+               );
+            } else if (this.recoveredField3800 == CheatBreaker.getInstance().getModuleManager().recoveredField1718) {
                // Vanilla server-list full signal: the first 10x8 sprite at (0, 176).
                Minecraft.getMinecraft().getTextureManager().bindTexture(Gui.icons);
                Gui.drawScaledCustomSizeModalRect(

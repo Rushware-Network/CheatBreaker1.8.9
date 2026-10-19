@@ -1,0 +1,62 @@
+{
+  "feature": "Barrier Block diagonal split module preview icon",
+  "implementation": "BarrierBlockPreview draws the two original textures as complementary triangles in the existing 32x32 ICON preview. No generated bitmap or item model is required.",
+  "upper_left": "textures/items/barrier.png",
+  "lower_right": "textures/blocks/glass.png (regular glass)",
+  "divider": {
+    "direction": "top-right to bottom-left",
+    "width_pixels": 1,
+    "color_rgba": [
+      0.72,
+      0.76,
+      0.8,
+      1.0
+    ]
+  },
+  "native_preview": {
+    "path": ".target/barrier-block-icon-preview.png",
+    "rendered_with": "LWJGL Pbuffer and the actual BarrierBlockPreview class from the built source JAR",
+    "backgrounds": [
+      "dark",
+      "light"
+    ],
+    "visually_inspected": true,
+    "opengl_error": false,
+    "blend_and_alpha_state_restoration_verified": true,
+    "log": ".target/barrier-block-icon-preview.log"
+  },
+  "validation": {
+    "build_command": "mvnw.cmd clean package",
+    "build_directory": ".target/maven-source",
+    "build_result": "BUILD SUCCESS",
+    "java_tests": {
+      "tests": 130,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "recovery_audit_tests": 7,
+    "recovery_audit_passed": true,
+    "source_jar_constructor_linkage_audit": "passed",
+    "source_packaged_and_deployed_jar_sha256_verified": true,
+    "native_files_verified": 14,
+    "build_log": ".target/barrier-block-icon-build.log",
+    "in_game_verified": false
+  },
+  "manifest_verified": {
+    "id": "CheatBreaker 1.8.9",
+    "jar": "CheatBreaker 1.8.9",
+    "clientVersion": "1.8.9"
+  },
+  "deployment": {
+    "version": "CheatBreaker 1.8.9",
+    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
+    "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
+    "jar_sha256": "8bc5afd7cff665df25a88fe7611b593b21184995a05e99aff4b560068e53d2da",
+    "jar_bytes": 124444803,
+    "compiled_classes": 5150,
+    "native_files_verified": 14,
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261019-132827",
+    "deployed_at": "2026-10-19T13:28:28.147013+08:00"
+  }
+}
