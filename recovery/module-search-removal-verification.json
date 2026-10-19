@@ -1,0 +1,53 @@
+{
+  "feature": "Remove module search bar and its performance changes",
+  "reverted_commits": [
+    "9bb3e69",
+    "3f18ab4"
+  ],
+  "restored_source_commit": "2e19bee",
+  "restored_sources": [
+    "src/main/java/com/cheatbreaker/client/ui/element/module/ModulePreviewContainer.java",
+    "src/main/java/com/cheatbreaker/client/ui/module/CBModulesGui.java"
+  ],
+  "source_matches_pre_search_version": true,
+  "scope": "Restore the original Mods panel layout and input handling; remove search rendering, filtering, caches, clipping changes and the obsolete search verification report.",
+  "build_command": "mvnw.cmd clean package",
+  "build_directory": ".target/maven-source",
+  "build": "passed",
+  "java_tests": {
+    "tests": 130,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "test_process_note": "The test JVM shutdown hook logged a NullPointerException in the unchanged AsyncExecutor.method_22036 saveOptions path. Surefire still reported 130 tests with zero failures/errors, and Maven exited successfully. This unrelated shutdown hook was not modified.",
+  "recovery_audit": {
+    "tests": 7,
+    "result": "passed"
+  },
+  "source_jar_constructor_linkage_audit": "passed",
+  "packaging": "python tools/package_client.py: passed",
+  "deployment": "python tools/deploy_neo.py: passed",
+  "source_packaged_deployed_jar_sha256_match": true,
+  "manifest": {
+    "id": "CheatBreaker 1.8.9",
+    "jar": "CheatBreaker 1.8.9",
+    "clientVersion": "1.8.9"
+  },
+  "deployment_details": {
+    "version": "CheatBreaker 1.8.9",
+    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
+    "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
+    "jar_sha256": "0fb47fa998079e417f0f5cae3febaba1c4acdcde0f95876e7767bb58b439210a",
+    "jar_bytes": 124445568,
+    "compiled_classes": 5150,
+    "native_files_verified": 14,
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261019-223617",
+    "deployed_at": "2026-10-19T22:36:17.915767+08:00"
+  },
+  "native_files_verified": 14,
+  "gameplay_verified": false,
+  "visual_layout_verified_in_game": false,
+  "build_log": ".target/module-search-removal-build.log",
+  "verified_at": "2026-10-19T22:36:17.915767+08:00"
+}
