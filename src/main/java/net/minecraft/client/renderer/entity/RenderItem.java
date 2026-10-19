@@ -907,6 +907,7 @@ public class RenderItem implements IResourceManagerReloadListener {
       }
 
       this.registerItems();
+      this.itemModelMesher.updateBarrierModel();
    }
 
    @Override

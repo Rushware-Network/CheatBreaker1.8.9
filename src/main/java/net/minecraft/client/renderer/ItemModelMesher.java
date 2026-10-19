@@ -3,11 +3,14 @@ package net.minecraft.client.renderer;
 import com.google.common.collect.Maps;
 import java.util.Map;
 import java.util.Map.Entry;
+import net.minecraft.block.BlockBarrier;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.src.Config;
 import net.minecraft.util.ResourceLocation;
@@ -51,6 +54,23 @@ public class ItemModelMesher {
 
       for (Entry var2 : this.simpleShapes.entrySet()) {
          this.simpleShapesCache.put((Integer)var2.getKey(), this.modelManager.getModel((ModelResourceLocation)var2.getValue()));
+      }
+      this.updateBarrierModel();
+   }
+
+   public void updateBarrierModel() {
+      int index = this.getIndex(Item.getItemFromBlock(Blocks.barrier), 0);
+      IBlockState state = ((BlockBarrier)Blocks.barrier).getRenderState();
+      if (state == null) {
+         ModelResourceLocation original = this.simpleShapes.get(index);
+         if (original == null) {
+            this.simpleShapesCache.remove(index);
+         } else {
+            this.simpleShapesCache.put(index, this.modelManager.getModel(original));
+         }
+      } else {
+         Item item = Item.getItemFromBlock(state.getBlock());
+         this.simpleShapesCache.put(index, this.getItemModel(item, state.getBlock().getMetaFromState(state)));
       }
    }
 

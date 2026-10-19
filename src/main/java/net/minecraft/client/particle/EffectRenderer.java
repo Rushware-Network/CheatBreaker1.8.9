@@ -290,6 +290,13 @@ public class EffectRenderer {
       this.particleEmitters.clear();
    }
 
+   public void clearBarrierParticles() {
+      // Barrier markers always use terrain atlas layer 1; retain every other particle.
+      for (List<EntityFX> layer : this.fxLayers[1]) {
+         layer.removeIf(particle -> particle instanceof Barrier);
+      }
+   }
+
    public void moveToNoAlphaLayer(EntityFX var1) {
       this.moveToLayer(var1, 0, 1);
    }

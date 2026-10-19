@@ -1,5 +1,7 @@
 package net.minecraft.client.multiplayer;
 
+import net.minecraft.block.BlockBarrier;
+
 import com.cheatbreaker.client.CheatBreaker;
 import com.cheatbreaker.client.event.type.DisconnectEvent;
 import com.google.common.collect.Sets;
@@ -305,7 +307,8 @@ public class WorldClient extends World {
       ItemStack var6 = this.mc.thePlayer.getHeldItem();
       boolean var7 = this.mc.playerController.getCurrentGameType() == WorldSettings.GameType.CREATIVE
          && var6 != null
-         && Block.getBlockFromItem(var6.getItem()) == Blocks.barrier;
+         && Block.getBlockFromItem(var6.getItem()) == Blocks.barrier
+         && ((BlockBarrier)Blocks.barrier).getRenderState() == null;
       BlockPos.MutableBlockPos var8 = new BlockPos.MutableBlockPos();
 
       for (int var9 = 0; var9 < 1000; var9++) {

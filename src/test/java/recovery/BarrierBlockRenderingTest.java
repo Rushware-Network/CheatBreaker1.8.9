@@ -15,11 +15,17 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.particle.Barrier;
+import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.BlockModelRenderer;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -28,6 +34,10 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Bootstrap;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.src.Config;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
@@ -35,8 +45,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.util.RegistrySimple;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.ChunkCache;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.optifine.override.ChunkCacheOF;
 import sun.misc.Unsafe;
 
 public class BarrierBlockRenderingTest extends TestCase {
@@ -48,6 +60,8 @@ public class BarrierBlockRenderingTest extends TestCase {
     private BlockModelShapes shapes;
     private CountingRenderGlobal renderer;
     private BlockRendererDispatcher dispatcher;
+    private ItemModelMesher itemModels;
+    private GameSettings previousSettings;
 
     private static <T> T allocate(Class<T> type) throws Exception {
         Field field = Unsafe.class.getDeclaredField("theUnsafe");
@@ -58,6 +72,7 @@ public class BarrierBlockRenderingTest extends TestCase {
     @Override public void setUp() {
         previousClient = CheatBreaker.instance;
         previousMinecraft = Minecraft.theMinecraft;
+        previousSettings = Config.gameSettings;
         try {
             initialize();
         } catch (Exception failure) {
@@ -94,12 +109,30 @@ public class BarrierBlockRenderingTest extends TestCase {
         dispatcher = allocate(BlockRendererDispatcher.class);
         dispatcher.blockModelShapes = shapes;
         dispatcher.gameSettings = allocate(GameSettings.class);
+        Config.gameSettings = dispatcher.gameSettings;
         dispatcher.blockModelRenderer = allocate(CapturingModelRenderer.class);
         game.blockRenderDispatcher = dispatcher;
         renderer = allocate(CountingRenderGlobal.class);
         game.renderGlobal = renderer;
         game.theWorld = allocate(WorldClient.class);
+        itemModels = new ItemModelMesher(models);
+        registerItemModel(Item.getItemFromBlock(Blocks.barrier), 0, "barrier", false);
+        registerItemModel(Item.getItemFromBlock(Blocks.glass), 0, "glass", true);
+        for (EnumDyeColor color : EnumDyeColor.values()) {
+            registerItemModel(Item.getItemFromBlock(Blocks.stained_glass), color.getMetadata(), "glass_" + color.getName(), true);
+        }
+        game.renderItem = allocate(RenderItem.class);
+        game.renderItem.itemModelMesher = itemModels;
         module = new BarrierBlockModule();
+    }
+
+    private void registerItemModel(Item item, int metadata, String name, boolean cube) throws Exception {
+        SimpleBakedModel model = allocate(SimpleBakedModel.class);
+        model.gui3d = cube;
+        model.cameraTransforms = new ItemCameraTransforms(ItemCameraTransforms.DEFAULT);
+        ModelResourceLocation location = new ModelResourceLocation(name, "inventory");
+        shapes.modelManager.modelRegistry.putObject(location, model);
+        itemModels.register(item, metadata, location);
     }
 
     @Override public void tearDown() {
@@ -108,6 +141,7 @@ public class BarrierBlockRenderingTest extends TestCase {
         }
         CheatBreaker.instance = previousClient;
         Minecraft.theMinecraft = previousMinecraft;
+        Config.gameSettings = previousSettings;
     }
 
     public void testAllSeventeenChoicesResolveToExistingGlassModels() {
@@ -215,6 +249,118 @@ public class BarrierBlockRenderingTest extends TestCase {
         assertEquals(bounds.d, after.d, 0.0);
         assertEquals(bounds.e, after.e, 0.0);
         assertEquals(bounds.f, after.f, 0.0);
+    }
+
+    public void testHeldInventoryAndDroppedModelsMatchAllGlassChoicesWithoutChangingStack() {
+        ItemStack stack = new ItemStack(Blocks.barrier, 23);
+        stack.setStackDisplayName("Actual Barrier");
+        NBTTagCompound before = (NBTTagCompound)stack.getTagCompound().copy();
+        IBakedModel original = itemModels.getItemModel(stack);
+        assertFalse(original.isGui3d());
+        module.setState(true);
+        for (String type : module.glassType.getAcceptedValues()) {
+            module.glassType.setValue(type, false);
+            IBlockState selected = module.getSelectedGlassState();
+            ItemStack glass = new ItemStack(Item.getItemFromBlock(selected.getBlock()), 1,
+                selected.getBlock().getMetaFromState(selected));
+            IBakedModel expected = itemModels.getItemModel(glass);
+            assertSame(expected, itemModels.getItemModel(stack));
+            assertTrue(Minecraft.getMinecraft().getRenderItem().shouldRenderItemIn3D(stack));
+            for (String context : new String[]{"inventory", "held", "dropped"}) {
+                assertSame(expected, Minecraft.getMinecraft().getRenderItem().getAppearanceModel(stack, context));
+            }
+            assertSame(expected.getItemCameraTransforms(), itemModels.getItemModel(stack).getItemCameraTransforms());
+            assertSame(Item.getItemFromBlock(Blocks.barrier), stack.getItem());
+            assertEquals(23, stack.stackSize);
+            assertEquals(0, stack.getMetadata());
+            assertEquals(before, stack.getTagCompound());
+        }
+        module.setState(false);
+        assertSame(original, itemModels.getItemModel(stack));
+        assertFalse(Minecraft.getMinecraft().getRenderItem().shouldRenderItemIn3D(stack));
+    }
+
+    public void testItemResourceReloadUsesFreshGlassAndRestoresFreshBarrierModel() throws Exception {
+        module.glassType.setValue("Cyan", false);
+        module.setState(true);
+        IBakedModel freshGlass = allocate(SimpleBakedModel.class);
+        IBakedModel freshBarrier = allocate(SimpleBakedModel.class);
+        shapes.modelManager.modelRegistry.putObject(new ModelResourceLocation("glass_cyan", "inventory"), freshGlass);
+        shapes.modelManager.modelRegistry.putObject(new ModelResourceLocation("barrier", "inventory"), freshBarrier);
+        itemModels.rebuildCache();
+        assertSame(freshGlass, itemModels.getItemModel(new ItemStack(Blocks.barrier)));
+        module.setState(false);
+        assertSame(freshBarrier, itemModels.getItemModel(new ItemStack(Blocks.barrier)));
+    }
+
+    public void testChunkCacheUsesRealGlassStateAndNeighborCullingWithOneFetchPerPosition() throws Exception {
+        CountingChunkCache source = allocate(CountingChunkCache.class);
+        source.state = barrier.getDefaultState();
+        ChunkCacheOF cache = new ChunkCacheOF(source, BlockPos.ORIGIN, new BlockPos(15, 15, 15), 0);
+        module.glassType.setValue("Cyan", false);
+        module.setState(true);
+        cache.renderStart();
+        try {
+            IBlockState glass = module.getSelectedGlassState();
+            for (int i = 0; i < 20; i++) {
+                assertSame(glass, cache.getBlockState(BlockPos.ORIGIN));
+            }
+            assertEquals(1, source.reads);
+            for (EnumFacing side : new EnumFacing[]{EnumFacing.UP, EnumFacing.SOUTH, EnumFacing.EAST}) {
+                assertFalse(glass.getBlock().shouldSideBeRendered(cache, BlockPos.ORIGIN.a(side), side));
+            }
+            CapturingModelRenderer capture = (CapturingModelRenderer)dispatcher.blockModelRenderer;
+            assertTrue(dispatcher.renderBlock(cache.getBlockState(BlockPos.ORIGIN), BlockPos.ORIGIN, cache, null));
+            assertSame(glass, capture.state);
+            assertSame(shapes.getModelForState(glass), capture.model);
+            assertSame(barrier.getDefaultState(), source.state);
+            // Out-of-cache neighbors must use the same render-only substitution.
+            assertSame(glass, cache.getBlockState(new BlockPos(-1, 0, 0)));
+        } finally {
+            cache.renderFinish();
+        }
+        module.setState(false);
+        cache.renderStart();
+        try {
+            assertSame(barrier.getDefaultState(), cache.getBlockState(BlockPos.ORIGIN));
+            source.state = Blocks.stone.getDefaultState();
+            assertSame(source.state, cache.getBlockState(new BlockPos(1, 0, 0)));
+        } finally {
+            cache.renderFinish();
+        }
+    }
+
+    public void testEnablingClearsExistingRedMarkersAndSuppressesFactoryUntilDisabled() throws Exception {
+        EffectRenderer effects = allocate(EffectRenderer.class);
+        effects.fxLayers = new java.util.List[4][2];
+        for (int layer = 0; layer < 4; layer++) {
+            for (int alpha = 0; alpha < 2; alpha++) {
+                effects.fxLayers[layer][alpha] = new ArrayList<>();
+            }
+        }
+        EntityFX unrelated = allocate(EntityFX.class);
+        effects.fxLayers[1][0].add(allocate(Barrier.class));
+        effects.fxLayers[1][0].add(unrelated);
+        effects.fxLayers[1][1].add(allocate(Barrier.class));
+        effects.fxLayers[0][0].add(unrelated);
+        Minecraft.getMinecraft().effectRenderer = effects;
+        module.setState(true);
+        assertEquals(1, effects.fxLayers[1][0].size());
+        assertSame(unrelated, effects.fxLayers[1][0].get(0));
+        assertTrue(effects.fxLayers[1][1].isEmpty());
+        assertEquals(1, effects.fxLayers[0][0].size());
+        Barrier.Factory factory = new Barrier.Factory();
+        assertNull(factory.getEntityFX(0, null, 0, 0, 0, 0, 0, 0));
+        module.setState(false);
+        assertTrue(factory.getEntityFX(0, null, 0, 0, 0, 0, 0, 0) instanceof Barrier);
+    }
+
+    private static class CountingChunkCache extends ChunkCache {
+        IBlockState state;
+        int reads;
+        CountingChunkCache() { super(null, BlockPos.ORIGIN, BlockPos.ORIGIN, 0); }
+        @Override public IBlockState getBlockState(BlockPos pos) { reads++; return state; }
+        @Override public WorldType x_() { return WorldType.DEFAULT; }
     }
 
     private static class CountingRenderGlobal extends RenderGlobal {

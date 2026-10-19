@@ -17,12 +17,12 @@ public class BarrierBlockModule extends AbstractModule {
    public BarrierBlockModule() {
       super("Barrier Block");
       this.setDefaultState(false);
-      this.method_28821("Show barrier blocks using the selected glass texture from your resource pack. "
-         + "Only their appearance changes; collision and world data stay the same. "
-         + "Disable this mod to restore invisible barriers.");
+      this.method_28821("Render barrier blocks and their held, inventory and dropped items as the selected glass from your resource pack. "
+         + "Hides the red barrier particles. Actual items, collision and world data stay the same. "
+         + "Disable this mod to restore the original barrier appearance and particles.");
       new Setting(this, "label").setValue("Barrier Appearance").method_08914(SettingsDetailLevel.SIMPLE);
-      this.glassType = new Setting(this, "Glass Type", "Choose regular glass or a stained glass color for barrier blocks. "
-         + "Applies while this mod is enabled; disabling it restores invisible barriers.")
+      this.glassType = new Setting(this, "Glass Type", "Choose regular or stained glass for barrier blocks, held items and inventory icons. "
+         + "Uses the selected glass model and transparency while this mod is enabled.")
          .setValue("Regular")
          .acceptedValues("Regular", "Cyan", "Pink", "White", "Orange", "Magenta", "Light Blue", "Yellow", "Lime",
             "Gray", "Light Gray", "Purple", "Blue", "Brown", "Green", "Red", "Black")
@@ -61,6 +61,7 @@ public class BarrierBlockModule extends AbstractModule {
       if (barrier.getRenderState() == state) {
          return;
       }
+      boolean enabling = barrier.getRenderState() == null && state != null;
 
       // Stop asynchronous mesh compilation before changing its shared model cache.
       boolean inWorld = this.minecraft != null && this.minecraft.theWorld != null && this.minecraft.renderGlobal != null;
@@ -71,6 +72,12 @@ public class BarrierBlockModule extends AbstractModule {
       barrier.setRenderState(state);
       if (this.minecraft != null && this.minecraft.getBlockRendererDispatcher() != null) {
          this.minecraft.getBlockRendererDispatcher().getBlockModelShapes().updateBarrierModel();
+      }
+      if (this.minecraft != null && this.minecraft.getRenderItem() != null) {
+         this.minecraft.getRenderItem().getItemModelMesher().updateBarrierModel();
+      }
+      if (enabling && this.minecraft != null && this.minecraft.effectRenderer != null) {
+         this.minecraft.effectRenderer.clearBarrierParticles();
       }
 
       if (inWorld) {

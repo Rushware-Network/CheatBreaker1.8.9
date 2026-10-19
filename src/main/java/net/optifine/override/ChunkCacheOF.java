@@ -1,7 +1,9 @@
 package net.optifine.override;
 
 import java.util.Arrays;
+import net.minecraft.block.BlockBarrier;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.src.Config;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
@@ -29,8 +31,10 @@ public class ChunkCacheOF implements IBlockAccess {
    public int posY;
    public int sizeX;
    public IBlockState[] blockStates;
+   private IBlockState barrierRenderState;
 
    public void renderStart() {
+      this.barrierRenderState = ((BlockBarrier)Blocks.barrier).getRenderState();
       if (this.combinedLights == null) {
          this.combinedLights = (int[])cacheCombinedLights.allocate(this.arraySize);
       }
@@ -117,6 +121,7 @@ public class ChunkCacheOF implements IBlockAccess {
    }
 
    public void renderFinish() {
+      this.barrierRenderState = null;
       cacheCombinedLights.free(this.combinedLights);
       this.combinedLights = null;
       cacheBlockStates.free(this.blockStates);
@@ -139,14 +144,20 @@ public class ChunkCacheOF implements IBlockAccess {
       if (var2 >= 0 && var2 < this.arraySize && this.blockStates != null) {
          IBlockState var3 = this.blockStates[var2];
          if (var3 == null) {
-            var3 = this.chunkCache.getBlockState(var1);
+            var3 = this.getRenderBlockState(var1);
             this.blockStates[var2] = var3;
          }
 
          return var3;
       } else {
-         return this.chunkCache.getBlockState(var1);
+         return this.getRenderBlockState(var1);
       }
+   }
+
+   private IBlockState getRenderBlockState(BlockPos pos) {
+      IBlockState state = this.chunkCache.getBlockState(pos);
+      // Substitute only in the render cache, including neighbors used by glass culling and connected textures.
+      return this.barrierRenderState != null && state.getBlock() == Blocks.barrier ? this.barrierRenderState : state;
    }
 
    @Override

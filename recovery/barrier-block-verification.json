@@ -1,5 +1,5 @@
 {
-  "feature": "Barrier Block glass rendering",
+  "feature": "Barrier Block full glass appearance and red marker suppression",
   "default_enabled": false,
   "default_glass_type": "Regular",
   "glass_types": [
@@ -22,28 +22,33 @@
     "Black"
   ],
   "default_toggle_keybind": "Unbound (0); inherited keyboard and mouse bindings and saved profile settings",
-  "description": "Barrier blocks use the selected resource-pack glass appearance while enabled. Disabling restores invisible barriers. Collision, hardness, lighting properties and world states are unchanged.",
+  "description": "Enabled barriers use the selected glass block rendering and held, hotbar, inventory and dropped item models. Red barrier markers are suppressed and existing markers removed on enable. Actual ItemStacks, collision, hardness and world block data remain barriers. Disabling restores vanilla barrier appearance and particle generation.",
   "rendering_implemented": true,
   "implementation": {
-    "model": "Alias the existing baked glass model in BlockModelShapes for the original barrier block state; rebuild the alias on resource reload.",
-    "layers": "Regular uses the existing CUTOUT layer; stained glass uses TRANSLUCENT.",
-    "culling": "Skip shared barrier faces and faces against opaque blocks.",
-    "updates": "Stop asynchronous chunk compilation before changing shared model state; rebuild chunk renderers only when the effective appearance changes.",
-    "performance": "No added per-frame listeners, world scans, render passes or per-block model allocations. Other block model lookups are unchanged. Only barrier render queries read cached appearance state.",
-    "performance_limit": "Visible barrier geometry has normal glass mesh, rasterization and translucency costs; changing appearance triggers a one-time chunk rebuild. No in-game FPS benchmark was performed."
+    "world_model": "ChunkCacheOF snapshots the selected glass state at mesh build start and substitutes barrier entries on cache misses. All block rendering, neighbor culling, connected-texture checks and glass settings use glass states; the underlying world remains unchanged. BlockModelShapes also aliases the selected baked model for direct barrier rendering.",
+    "item_model": "ItemModelMesher aliases the existing selected glass inventory model at the barrier cache entry, so held, GUI, 3D and dropped rendering share the glass model, transforms and particle texture. Restores the original registration on disable and reapplies after model cache reload or renderer initialization.",
+    "layers": "Regular glass uses CUTOUT; stained glass uses TRANSLUCENT, including held-item depth-mask selection through the existing barrier render-layer override.",
+    "particles": "WorldClient avoids red marker generation while enabled. Barrier.Factory returns null before allocation for other marker spawn requests. Enabling removes only existing Barrier instances from the two terrain particle lists; disabling restores normal generation.",
+    "updates": "Effective appearance changes stop asynchronous chunk compilation, update world/item cache aliases and rebuild chunk renderers. Repeated selection and disabled texture changes skip rebuilds.",
+    "performance": "No new per-frame listeners, world scans, render passes, per-item stack copies or per-block model creation. Item model lookups are unchanged; render-state substitution runs on existing chunk cache misses and uses cached results thereafter. Existing markers are scanned once on enable.",
+    "performance_limit": "Glass geometry has normal mesh, rasterization and translucency costs; changing appearance rebuilds chunks once. No in-game FPS benchmark was performed."
   },
   "validation": {
     "build_command": "mvnw.cmd clean package",
     "build_directory": ".target/maven-source",
     "build_result": "BUILD SUCCESS",
     "java_tests": {
-      "tests": 126,
+      "tests": 130,
       "failures": 0,
       "errors": 0,
       "skipped": 0
     },
     "barrier_rendering_tests": [
       "testExistingDispatcherRendersSelectedModelWithOriginalBarrierState",
+      "testEnablingClearsExistingRedMarkersAndSuppressesFactoryUntilDisabled",
+      "testChunkCacheUsesRealGlassStateAndNeighborCullingWithOneFetchPerPosition",
+      "testHeldInventoryAndDroppedModelsMatchAllGlassChoicesWithoutChangingStack",
+      "testItemResourceReloadUsesFreshGlassAndRestoresFreshBarrierModel",
       "testInternalAndOpaqueFacesAreCulledWithoutChangingPhysics",
       "testAllSeventeenChoicesResolveToExistingGlassModels",
       "testResourceReloadRebindsToFreshBakedModel",
@@ -54,7 +59,7 @@
     "source_jar_constructor_linkage_audit": "passed",
     "source_packaged_and_deployed_jar_sha256_verified": true,
     "native_files_verified": 14,
-    "build_log": ".target/barrier-block-rendering-build.log",
+    "build_log": ".target/barrier-block-full-appearance-build.log",
     "in_game_verified": false
   },
   "manifest_verified": {
@@ -66,11 +71,11 @@
     "version": "CheatBreaker 1.8.9",
     "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
     "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
-    "jar_sha256": "4b8d352a4e707ad83b2266d9135d437a470c27d86175858cd204c173d5aed1fd",
-    "jar_bytes": 124442123,
+    "jar_sha256": "519a4dcac427da84add84412cc4cf4cea1b207e54e464b891e3a46bcef6a62ce",
+    "jar_bytes": 124443456,
     "compiled_classes": 5149,
     "native_files_verified": 14,
-    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261019-130334",
-    "deployed_at": "2026-10-19T13:03:34.922074+08:00"
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261019-132224",
+    "deployed_at": "2026-10-19T13:22:24.847948+08:00"
   }
 }
