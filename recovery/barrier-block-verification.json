@@ -1,0 +1,41 @@
+{
+  "feature": "Barrier Block module placeholder",
+  "scope": "Module registration, existing barrier item preview icon, settings entry, inherited Toggle Mod Keybind and configuration persistence. Glass rendering is reserved for a later implementation.",
+  "default_enabled": false,
+  "default_toggle_keybind": "Unbound (0); existing keyboard and mouse binding handling",
+  "settings_notice": "Glass Rendering (Coming Soon)",
+  "rendering_implemented": false,
+  "validation": {
+    "build_command": "mvnw.cmd clean package",
+    "build_directory": ".target/maven-source",
+    "build_result": "BUILD SUCCESS",
+    "java_tests": {
+      "tests": 121,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "recovery_audit_tests": 7,
+    "recovery_audit_passed": true,
+    "source_jar_constructor_linkage_audit": "passed",
+    "module_class_and_preview_resource_packaged": true,
+    "build_log": ".target/barrier-block-build.log",
+    "in_game_verified": false
+  },
+  "deployment": {
+    "version": "CheatBreaker 1.8.9",
+    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
+    "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
+    "jar_sha256": "d2fb0596e4fa2f89844601ec0638d09f6cd9a2ce47118e3d05226de8dbf8a1b8",
+    "jar_bytes": 124439527,
+    "compiled_classes": 5149,
+    "native_files_verified": 14,
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261019-125427",
+    "deployed_at": "2026-10-19T12:54:28.062091+08:00"
+  },
+  "manifest_verified": {
+    "id": "CheatBreaker 1.8.9",
+    "jar": "CheatBreaker 1.8.9",
+    "clientVersion": "1.8.9"
+  }
+}

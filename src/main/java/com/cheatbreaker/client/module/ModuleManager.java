@@ -14,6 +14,7 @@ import com.cheatbreaker.client.module.type.HurtcamModule;
 import com.cheatbreaker.client.module.type.AutoTextModule;
 import com.cheatbreaker.client.module.type.TabListModule;
 import com.cheatbreaker.client.module.type.BlockOverlayModule;
+import com.cheatbreaker.client.module.type.BarrierBlockModule;
 import com.cheatbreaker.client.module.type.BossBarModule;
 import com.cheatbreaker.client.module.type.CPSModule;
 import com.cheatbreaker.client.module.type.ChatModule;
@@ -80,6 +81,7 @@ public class ModuleManager {
    public String recoveredField1695;
    public XRayModule xray;
    public BlockOverlayModule recoveredField1696;
+   public BarrierBlockModule barrierBlock;
    public ComboCounterModule recoveredField1697;
    public TeammatesModule teammatesModule;
    public KeyBindingResumeListener recoveredField1698;
@@ -159,6 +161,7 @@ public class ModuleManager {
       this.recoveredField1706.add(this.recoveredField1701 = new AutoTextModule());
       this.recoveredField1706.add(this.recoveredField1722 = new TNTTimerModule());
       this.recoveredField1706.add(this.recoveredField1696 = new BlockOverlayModule());
+      this.recoveredField1706.add(this.barrierBlock = new BarrierBlockModule());
       this.recoveredField1706.add(this.recoveredField1727 = new TextureOptionsModule());
       this.recoveredField1706.add(this.recoveredField1723 = new PerspectiveModule());
       this.recoveredField1706.add(this.hurtcam = new HurtcamModule());
