@@ -17,6 +17,22 @@
     "Focused text input consumes editing keys and prevents HUD selection/movement shortcuts.",
     "Escape/Enter release search focus; clicking outside or closing the panel releases focus."
   ],
+  "performance": {
+    "normalized_names": "Cached once when the panel is initialized.",
+    "filter_rebuild": "Only when the normalized query changes; reuse the same result list and original card objects.",
+    "draw_and_click": "Iterate the cached results without lowercasing or matching names.",
+    "viewport": "Reuse parent layout parameters; no glGetInteger, GL attribute push/pop, scissor buffer, or ScaledResolution allocation in the search render path.",
+    "panel_closed": "No search rendering or filtering while the Mods panel is closed; small initialized caches remain in memory.",
+    "cache_audit": {
+      "unchanged_query_updates": 100000,
+      "name_scans_during_unchanged_updates": 0,
+      "changed_query_empty_clear_order_and_scroll_checks": "passed",
+      "compiled_render_and_click_bytecode_audit": "passed"
+    },
+    "audit_source": ".target/tools/ModuleSearchCacheAudit.java",
+    "audit_log": ".target/module-search-cache-audit.log",
+    "limits": "Search text/background rendering and clipping have normal UI costs; small name/reference caches use memory. Absolute zero overhead is not claimed. No in-game FPS or visual benchmark was performed."
+  },
   "build_command": "mvnw.cmd clean package",
   "build_directory": ".target/maven-source",
   "build": "passed",
@@ -34,7 +50,7 @@
   "packaging": "python tools/package_client.py: passed",
   "deployment": "python tools/deploy_neo.py: passed",
   "deployed_directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
-  "jar_sha256": "be9941ef5f8f83afa44b5f4d1c71e27e977668f18656cc205073749c7ca17cea",
+  "jar_sha256": "7965177e4ab270046990c4ecf09ea7387f06131f610d9eb8db1bc8021b5b88e1",
   "source_packaged_deployed_jar_sha256_match": true,
   "native_files_verified": 14,
   "manifest": {
@@ -42,9 +58,9 @@
     "jar": "CheatBreaker 1.8.9",
     "clientVersion": "1.8.9"
   },
-  "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261019-222510",
+  "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261019-223048",
   "gameplay_verified": false,
   "visual_layout_verified_in_game": false,
-  "build_log": ".target/module-search-build.log",
-  "verified_at": "2026-10-19T22:25:10.649795+08:00"
+  "build_log": ".target/module-search-performance-build.log",
+  "verified_at": "2026-10-19T22:30:48.967346+08:00"
 }

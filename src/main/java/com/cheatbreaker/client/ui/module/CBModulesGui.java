@@ -742,6 +742,10 @@ public class CBModulesGui extends GuiScreen {
 
          for (AbstractScrollableElement var47 : this.recoveredField789) {
             if (var47 == this.recoveredField795 || var47 == this.currentScrollableElement) {
+               if (var47 instanceof ModulePreviewContainer) {
+                  ((ModulePreviewContainer)var47).setSearchViewport(var37 / 2 - 185, var39 / 2 + 15,
+                     var37 / 2 + 185, var39 - 20, var7.getScaleFactor() * var8, var39);
+               }
                var47.handleDrawElement(var1, var2, var3);
             }
          }
