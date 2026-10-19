@@ -11,6 +11,7 @@ public final class BarrierBlockPreview {
    private BarrierBlockPreview() {}
 
    public static void draw(float x, float y, float width, float height) {
+      float middle = x + width / 2.0F;
       GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_CURRENT_BIT | GL11.GL_LINE_BIT);
       try {
          GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -20,34 +21,39 @@ public final class BarrierBlockPreview {
          GL11.glDisable(GL11.GL_CULL_FACE);
          GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-         // Upper-left half: x/width + y/height <= 1.
+         // Left half of the original barrier texture, without stretching.
          Minecraft.getMinecraft().getTextureManager().bindTexture(BARRIER);
-         GL11.glBegin(GL11.GL_TRIANGLES);
+         GL11.glBegin(GL11.GL_QUADS);
          GL11.glTexCoord2f(0.0F, 0.0F);
          GL11.glVertex2f(x, y);
          GL11.glTexCoord2f(0.0F, 1.0F);
          GL11.glVertex2f(x, y + height);
-         GL11.glTexCoord2f(1.0F, 0.0F);
-         GL11.glVertex2f(x + width, y);
+         GL11.glTexCoord2f(0.5F, 1.0F);
+         GL11.glVertex2f(middle, y + height);
+         GL11.glTexCoord2f(0.5F, 0.0F);
+         GL11.glVertex2f(middle, y);
          GL11.glEnd();
 
+         // Right half of regular glass, independent of the selected glass color.
          Minecraft.getMinecraft().getTextureManager().bindTexture(GLASS);
-         GL11.glBegin(GL11.GL_TRIANGLES);
-         GL11.glTexCoord2f(1.0F, 0.0F);
-         GL11.glVertex2f(x + width, y);
-         GL11.glTexCoord2f(0.0F, 1.0F);
-         GL11.glVertex2f(x, y + height);
+         GL11.glBegin(GL11.GL_QUADS);
+         GL11.glTexCoord2f(0.5F, 0.0F);
+         GL11.glVertex2f(middle, y);
+         GL11.glTexCoord2f(0.5F, 1.0F);
+         GL11.glVertex2f(middle, y + height);
          GL11.glTexCoord2f(1.0F, 1.0F);
          GL11.glVertex2f(x + width, y + height);
+         GL11.glTexCoord2f(1.0F, 0.0F);
+         GL11.glVertex2f(x + width, y);
          GL11.glEnd();
 
-         // A one-pixel divider from the top-right corner to the bottom-left corner.
+         // A one-pixel vertical divider down the center.
          GL11.glDisable(GL11.GL_TEXTURE_2D);
          GL11.glLineWidth(1.0F);
          GL11.glColor4f(0.72F, 0.76F, 0.80F, 1.0F);
          GL11.glBegin(GL11.GL_LINES);
-         GL11.glVertex2f(x + width, y);
-         GL11.glVertex2f(x, y + height);
+         GL11.glVertex2f(middle, y);
+         GL11.glVertex2f(middle, y + height);
          GL11.glEnd();
       } finally {
          GL11.glPopAttrib();

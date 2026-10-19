@@ -1,10 +1,8 @@
 {
-  "feature": "Barrier Block diagonal split module preview icon",
-  "implementation": "BarrierBlockPreview draws the two original textures as complementary triangles in the existing 32x32 ICON preview. No generated bitmap or item model is required.",
-  "upper_left": "textures/items/barrier.png",
-  "lower_right": "textures/blocks/glass.png (regular glass)",
+  "feature": "Barrier Block vertical split module preview icon",
+  "implementation": "BarrierBlockPreview draws the left half of the original barrier texture and the right half of regular glass at their original proportions, separated by a centered vertical line in the existing 32x32 ICON preview.",
   "divider": {
-    "direction": "top-right to bottom-left",
+    "direction": "vertical, top to bottom at the horizontal center",
     "width_pixels": 1,
     "color_rgba": [
       0.72,
@@ -52,11 +50,13 @@
     "version": "CheatBreaker 1.8.9",
     "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
     "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
-    "jar_sha256": "8bc5afd7cff665df25a88fe7611b593b21184995a05e99aff4b560068e53d2da",
-    "jar_bytes": 124444803,
+    "jar_sha256": "c7d5f7d01e0c10407169a1ef4e33f349c1f107f7e877df69eee6e758fba6ceec",
+    "jar_bytes": 124444861,
     "compiled_classes": 5150,
     "native_files_verified": 14,
-    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261019-132827",
-    "deployed_at": "2026-10-19T13:28:28.147013+08:00"
-  }
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261019-133027",
+    "deployed_at": "2026-10-19T13:30:27.825668+08:00"
+  },
+  "left_half": "textures/items/barrier.png",
+  "right_half": "textures/blocks/glass.png (regular glass)"
 }
