@@ -1,0 +1,50 @@
+{
+  "feature": "Module name search bar",
+  "scope": "Only the Mods card panel and its search input routing; preserve the existing three-column cards, buttons and order.",
+  "layout": {
+    "alignment": "Centered over the three-column card area; existing scrollbar gutter retained.",
+    "search_height": 16,
+    "horizontal_padding": 4,
+    "gap_before_cards": 4,
+    "card_vertical_offset_added": 20,
+    "scrolling": "Search row remains fixed; cards are clipped below it.",
+    "themes": "Existing dark/light theme support."
+  },
+  "behavior": [
+    "Live, case-insensitive module display-name substring matching with outer whitespace trimmed.",
+    "Clearing the search restores all existing cards in their original order; filtered cards cannot receive clicks.",
+    "Changed queries reset scrolling; UI scale changes preserve the search and its focus.",
+    "Focused text input consumes editing keys and prevents HUD selection/movement shortcuts.",
+    "Escape/Enter release search focus; clicking outside or closing the panel releases focus."
+  ],
+  "build_command": "mvnw.cmd clean package",
+  "build_directory": ".target/maven-source",
+  "build": "passed",
+  "java_tests": {
+    "tests": 130,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "recovery_audit": {
+    "tests": 7,
+    "result": "passed"
+  },
+  "source_jar_constructor_linkage_audit": "passed",
+  "packaging": "python tools/package_client.py: passed",
+  "deployment": "python tools/deploy_neo.py: passed",
+  "deployed_directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
+  "jar_sha256": "be9941ef5f8f83afa44b5f4d1c71e27e977668f18656cc205073749c7ca17cea",
+  "source_packaged_deployed_jar_sha256_match": true,
+  "native_files_verified": 14,
+  "manifest": {
+    "id": "CheatBreaker 1.8.9",
+    "jar": "CheatBreaker 1.8.9",
+    "clientVersion": "1.8.9"
+  },
+  "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261019-222510",
+  "gameplay_verified": false,
+  "visual_layout_verified_in_game": false,
+  "build_log": ".target/module-search-build.log",
+  "verified_at": "2026-10-19T22:25:10.649795+08:00"
+}

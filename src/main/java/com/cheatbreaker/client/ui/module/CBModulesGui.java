@@ -101,6 +101,7 @@ public class CBModulesGui extends GuiScreen {
 
    public void method_27003(AbstractScrollableElement var1, boolean var2, int var3) {
       if (var2) {
+         if (var1 instanceof ModulePreviewContainer) ((ModulePreviewContainer)var1).blurSearch();
          var1.x = var1.recoveredField3011;
          recoveredField784 = false;
          this.recoveredField795 = null;
@@ -113,6 +114,7 @@ public class CBModulesGui extends GuiScreen {
 
    @Override
    public void a_() {
+      if (this.recoveredField801 instanceof ModulePreviewContainer) ((ModulePreviewContainer)this.recoveredField801).blurSearch();
       Keyboard.enableRepeatEvents(false);
       this.j.entityRenderer.stopUseShader();
    }
@@ -375,6 +377,8 @@ public class CBModulesGui extends GuiScreen {
 
    @Override
    public void keyTyped(char var1, int var2) throws java.io.IOException {
+      if (this.recoveredField795 == this.recoveredField801 && draggingModule == null && !recoveredField784
+         && ((ModulePreviewContainer)this.recoveredField801).handleSearchKey(var1, var2)) return;
       if (var2 == 1) {
          CheatBreaker.getInstance().configManager.method_25109();
       }
@@ -834,7 +838,10 @@ public class CBModulesGui extends GuiScreen {
       int var2 = (int)(this.l / var1);
       int var3 = (int)(this.m / var1);
       this.method_26998(var2);
-      if (!this.positions.isEmpty()) {
+      boolean searching = this.recoveredField795 == this.recoveredField801
+         && this.recoveredField801 instanceof ModulePreviewContainer;
+      if (searching) ((ModulePreviewContainer)this.recoveredField801).updateSearchCursor();
+      if (!this.positions.isEmpty() && !(searching && ((ModulePreviewContainer)this.recoveredField801).isSearchFocused())) {
          boolean var4 = Keyboard.isKeyDown(203);
          boolean var5 = Keyboard.isKeyDown(205);
          boolean var6 = Keyboard.isKeyDown(200);
@@ -1028,6 +1035,11 @@ public class CBModulesGui extends GuiScreen {
 
    @Override
    public void mouseClicked(int var1, int var2, int var3) throws java.io.IOException {
+      if (this.recoveredField795 == this.recoveredField801 && draggingModule == null && !recoveredField784) {
+         if (((ModulePreviewContainer)this.recoveredField801).handleSearchClick(var1, var2, var3)) return;
+      } else if (this.recoveredField801 instanceof ModulePreviewContainer) {
+         ((ModulePreviewContainer)this.recoveredField801).blurSearch();
+      }
       if (var3 == 0 && draggingModule == null && this.cosmeticsButton.isMouseInside(var1, var2)
          && (this.recoveredField795 == null || !this.recoveredField795.isMouseInside(var1, var2))) {
          this.j.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
@@ -1445,6 +1457,11 @@ public class CBModulesGui extends GuiScreen {
          AbstractScrollableElement newPanel = this.recoveredField789.get(index);
          newPanel.recoveredField3012 = oldPanel.recoveredField3012;
          newPanel.recoveredField3010 = oldPanel.recoveredField3010;
+         if (oldPanel instanceof ModulePreviewContainer && newPanel instanceof ModulePreviewContainer) {
+            ((ModulePreviewContainer)newPanel).restoreSearch((ModulePreviewContainer)oldPanel);
+            newPanel.recoveredField3012 = oldPanel.recoveredField3012;
+            newPanel.recoveredField3010 = oldPanel.recoveredField3010;
+         }
          if (oldPanel instanceof ModuleListElement && newPanel instanceof ModuleListElement) {
             ((ModuleListElement)newPanel).module = ((ModuleListElement)oldPanel).module;
             ((ModuleListElement)newPanel).recoveredField1358 = ((ModuleListElement)oldPanel).recoveredField1358;
