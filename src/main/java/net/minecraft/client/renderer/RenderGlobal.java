@@ -264,24 +264,29 @@ public class RenderGlobal implements IResourceManagerReloadListener, IWorldAcces
    }
 
    public void renderSky(WorldRenderer var1, float var2, boolean var3) {
-      byte var4 = 64;
-      byte var5 = 6;
+      // Patcher's OptiFine sky fix uses a 256-block render distance: [-384, 448].
+      // Keep that coverage without increasing the old mesh's vertex budget at low distances.
+      int cells = Math.min(13, (this.renderDistance / 64 + 2) * 2 + 1);
+      float cellSize = 832.0F / cells;
       var1.begin(7, DefaultVertexFormats.POSITION);
-      int var6 = (this.renderDistance / 64 + 1) * 64 + 64;
 
-      for (int var7 = -var6; var7 <= var6; var7 += 64) {
-         for (int var8 = -var6; var8 <= var6; var8 += 64) {
-            float var9 = var7;
-            float var10 = var7 + 64;
+      for (int x = 0; x < cells; x++) {
+         float x0 = -384.0F + x * cellSize;
+         float x1 = -384.0F + (x + 1) * cellSize;
+         for (int z = 0; z < cells; z++) {
+            float z0 = -384.0F + z * cellSize;
+            float z1 = -384.0F + (z + 1) * cellSize;
+            float var9 = x0;
+            float var10 = x1;
             if (var3) {
-               var10 = var7;
-               var9 = var7 + 64;
+               var10 = x0;
+               var9 = x1;
             }
 
-            var1.pos(var9, var2, var8).endVertex();
-            var1.pos(var10, var2, var8).endVertex();
-            var1.pos(var10, var2, var8 + 64).endVertex();
-            var1.pos(var9, var2, var8 + 64).endVertex();
+            var1.pos(var9, var2, z0).endVertex();
+            var1.pos(var10, var2, z0).endVertex();
+            var1.pos(var10, var2, z1).endVertex();
+            var1.pos(var9, var2, z1).endVertex();
          }
       }
    }
@@ -1446,49 +1451,8 @@ public class RenderGlobal implements IResourceManagerReloadListener, IWorldAcces
             Shaders.disableTexture2D();
          }
 
-         GlStateManager.color(0.0F, 0.0F, 0.0F);
+         // Like Patcher's default Player Void Rendering fix, omit the opaque void box.
          double var33 = this.mc.thePlayer.getPositionEyes(var1).yCoord - this.theWorld.getHorizon();
-         if (var33 < 0.0) {
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(0.0F, 12.0F, 0.0F);
-            if (this.vboEnabled) {
-               this.sky2VBO.bindBuffer();
-               GL11.glEnableClientState(32884);
-               GL11.glVertexPointer(3, 5126, 12, 0L);
-               this.sky2VBO.drawArrays(7);
-               this.sky2VBO.unbindBuffer();
-               GL11.glDisableClientState(32884);
-            } else {
-               GlStateManager.callList(this.glSkyList2);
-            }
-
-            GlStateManager.popMatrix();
-            float var38 = 1.0F;
-            float var40 = -((float)(var33 + 65.0));
-            float var42 = -1.0F;
-            var24.begin(7, DefaultVertexFormats.POSITION_COLOR);
-            var24.pos(-1.0, var40, 1.0).color(0, 0, 0, 255).endVertex();
-            var24.pos(1.0, var40, 1.0).color(0, 0, 0, 255).endVertex();
-            var24.pos(1.0, -1.0, 1.0).color(0, 0, 0, 255).endVertex();
-            var24.pos(-1.0, -1.0, 1.0).color(0, 0, 0, 255).endVertex();
-            var24.pos(-1.0, -1.0, -1.0).color(0, 0, 0, 255).endVertex();
-            var24.pos(1.0, -1.0, -1.0).color(0, 0, 0, 255).endVertex();
-            var24.pos(1.0, var40, -1.0).color(0, 0, 0, 255).endVertex();
-            var24.pos(-1.0, var40, -1.0).color(0, 0, 0, 255).endVertex();
-            var24.pos(1.0, -1.0, -1.0).color(0, 0, 0, 255).endVertex();
-            var24.pos(1.0, -1.0, 1.0).color(0, 0, 0, 255).endVertex();
-            var24.pos(1.0, var40, 1.0).color(0, 0, 0, 255).endVertex();
-            var24.pos(1.0, var40, -1.0).color(0, 0, 0, 255).endVertex();
-            var24.pos(-1.0, var40, -1.0).color(0, 0, 0, 255).endVertex();
-            var24.pos(-1.0, var40, 1.0).color(0, 0, 0, 255).endVertex();
-            var24.pos(-1.0, -1.0, 1.0).color(0, 0, 0, 255).endVertex();
-            var24.pos(-1.0, -1.0, -1.0).color(0, 0, 0, 255).endVertex();
-            var24.pos(-1.0, -1.0, -1.0).color(0, 0, 0, 255).endVertex();
-            var24.pos(-1.0, -1.0, 1.0).color(0, 0, 0, 255).endVertex();
-            var24.pos(1.0, -1.0, 1.0).color(0, 0, 0, 255).endVertex();
-            var24.pos(1.0, -1.0, -1.0).color(0, 0, 0, 255).endVertex();
-            var23.draw();
-         }
 
          if (this.theWorld.t.method_10680()) {
             GlStateManager.color(var5 * 0.2F + 0.04F, var6 * 0.2F + 0.04F, var7 * 0.6F + 0.1F);
@@ -1500,22 +1464,14 @@ public class RenderGlobal implements IResourceManagerReloadListener, IWorldAcces
             GlStateManager.color(this.mc.entityRenderer.fogColorRed, this.mc.entityRenderer.fogColorGreen, this.mc.entityRenderer.fogColorBlue);
          }
 
-         GlStateManager.pushMatrix();
-         GlStateManager.translate(0.0F, -((float)(var33 - 16.0)), 0.0F);
-         if (Config.isSkyEnabled()) {
-            if (this.vboEnabled) {
-               this.sky2VBO.bindBuffer();
-               GlStateManager.glEnableClientState(32884);
-               GlStateManager.glVertexPointer(3, 5126, 12, 0);
-               this.sky2VBO.drawArrays(7);
-               this.sky2VBO.unbindBuffer();
-               GlStateManager.glDisableClientState(32884);
-            } else {
-               GlStateManager.callList(this.glSkyList2);
-            }
+         // Patcher disables this VBO draw. Skip it outright instead of calling list -1.
+         if (!this.vboEnabled && Config.isSkyEnabled()) {
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(0.0F, -((float)(var33 - 16.0)), 0.0F);
+            GlStateManager.callList(this.glSkyList2);
+            GlStateManager.popMatrix();
          }
 
-         GlStateManager.popMatrix();
          GlStateManager.enableTexture2D();
          if (var20) {
             Shaders.enableTexture2D();

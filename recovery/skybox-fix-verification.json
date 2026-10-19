@@ -1,0 +1,137 @@
+{
+  "feature": "OptiFine 1.8.9 custom sky horizon and void occlusion fix",
+  "source": "src/main/java/net/minecraft/client/renderer/RenderGlobal.java",
+  "reference": {
+    "project": "Patcher by Sk1er LLC",
+    "revision": "4ce6e196e5ad1339f8a0ab96eb5680c2f6464583",
+    "sky_fix": "https://github.com/Sk1erLLC/Patcher/blob/4ce6e196e5ad1339f8a0ab96eb5680c2f6464583/src/main/java/club/sk1er/patcher/mixins/bugfixes/optifine/RenderGlobalMixin_FixSkyVBOs.java",
+    "void_fix": "https://github.com/Sk1erLLC/Patcher/blob/4ce6e196e5ad1339f8a0ab96eb5680c2f6464583/src/main/java/club/sk1er/patcher/asm/render/world/RenderGlobalTransformer.java",
+    "upstream_license": "CC BY-NC-SA 4.0",
+    "upstream_license_url": "https://github.com/Sk1erLLC/Patcher/blob/4ce6e196e5ad1339f8a0ab96eb5680c2f6464583/LICENSE.md",
+    "approach": "Implement the rendering policy directly in the existing renderer; do not bundle Patcher or its Mixin/ASM classes."
+  },
+  "changes": [
+    "Use Patcher sky-plane bounds [-384, 448] on X/Z, independent of view distance.",
+    "Keep low-distance mesh vertex counts within the original budget; cap each plane at 676 vertices. At 16+ chunks, coordinates exactly match Patcher.",
+    "Skip the lower sky VBO and its matrix operations outright; preserve the valid display-list fallback with VBO disabled.",
+    "Omit the opaque below-horizon void box, matching the default-enabled Patcher Player Void Rendering policy."
+  ],
+  "performance_review": {
+    "additional_per_frame_draw_calls": 0,
+    "additional_per_frame_allocations_in_changed_code": 0,
+    "additional_per_frame_resource_reads_or_texture_uploads": 0,
+    "mesh_generation": "Existing sky-buffer rebuild only; no new tick/render handlers, caches or per-frame mesh generation.",
+    "vertices_per_plane_before_after": {
+      "2": {
+        "before": 100,
+        "after": 100
+      },
+      "4": {
+        "before": 196,
+        "after": 196
+      },
+      "8": {
+        "before": 324,
+        "after": 324
+      },
+      "12": {
+        "before": 484,
+        "after": 484
+      },
+      "16": {
+        "before": 676,
+        "after": 676
+      },
+      "32": {
+        "before": 1764,
+        "after": 676
+      },
+      "64": {
+        "before": 5476,
+        "after": 676
+      }
+    },
+    "vbo_draws_removed": "One lower-plane draw per sky pass; below the horizon also remove the black-plane draw and the 20-vertex box draw.",
+    "limits": "Structural rendering-cost review and offscreen GL validation, not an in-game FPS/GPU-time benchmark. Fixed larger coverage and changed low-distance tessellation may affect fog/shader appearance; real resource packs and shader packs have not been checked in-game."
+  },
+  "validation": {
+    "build_command": "mvnw.cmd clean package",
+    "build_directory": ".target/maven-source",
+    "result": "BUILD SUCCESS",
+    "java_tests": {
+      "tests": 133,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "geometry_test": "SkyboxGeometryTest: full coverage, winding, height and vertex budgets at 0-64 chunks; shared edges; exact Patcher coordinates at 16 chunks.",
+    "recovery_audit": {
+      "checks": 7,
+      "failures": 0,
+      "errors": 0,
+      "passed": true,
+      "meaning": "Recovery audit only; does not assert successful source compilation or runtime equivalence of cleaned source"
+    },
+    "source_jar_constructor_linkage_audit": "passed",
+    "native_render_audit": {
+      "frames": 2160,
+      "vbo_custom_sky_pixel_checks": 23592960,
+      "heights": [
+        128,
+        63,
+        35,
+        1,
+        -16,
+        -128
+      ],
+      "render_distances": [
+        2,
+        4,
+        8,
+        16,
+        32,
+        64
+      ],
+      "vbo_toggle_sequence": [
+        true,
+        false,
+        true
+      ],
+      "gl_errors": 0,
+      "custom_sky_occlusion_in_vbo_mode": false,
+      "lower_vbo_buffer": "null trap passed",
+      "vbo_display_list_draw": "green sentinel not drawn"
+    },
+    "native_render_scope": "Synthetic solid-color CustomSkyLayer in the actual renderSky path; VBO-off frames are checked for GL errors and switch safety, not absence of the retained lower display-list plane.",
+    "negative_control": {
+      "source_revision": "163ef1f",
+      "result": "Original RenderGlobal fails the lower-VBO null trap at RenderGlobal.java:1507; the changed packaged JAR passes.",
+      "log": ".target/skybox-baseline-render-audit.log"
+    },
+    "native_render_artifact": "Fresh .target/maven-source/CheatBreaker1.8.9.jar",
+    "native_render_audit_source": ".target/tools/SkyboxRenderAudit.java",
+    "native_render_audit_log": ".target/skybox-native-render-audit.log",
+    "build_log": ".target/skybox-fix-build.log",
+    "gameplay_verified": false,
+    "fps_benchmark_performed": false
+  },
+  "source_packaged_and_deployed_jar_sha256_match": true,
+  "manifest": {
+    "id": "CheatBreaker 1.8.9",
+    "jar": "CheatBreaker 1.8.9",
+    "clientVersion": "1.8.9"
+  },
+  "all_native_files_and_hashes_match": true,
+  "native_files_verified": 14,
+  "deployment": {
+    "version": "CheatBreaker 1.8.9",
+    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
+    "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
+    "jar_sha256": "80663a58f9ebd3935f9b9f4bd8b20e3495568fe0c17647f4feae4b587ce1509e",
+    "jar_bytes": 124445342,
+    "compiled_classes": 5150,
+    "native_files_verified": 14,
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261019-225321",
+    "deployed_at": "2026-10-19T22:53:21.751670+08:00"
+  }
+}
