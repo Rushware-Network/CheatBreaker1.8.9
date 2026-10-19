@@ -1,0 +1,88 @@
+{
+  "feature": "Cooldowns module card alignment and fixed 16.0-second HUD sample",
+  "sources": [
+    "src/main/java/com/cheatbreaker/client/module/type/cooldowns/CooldownRenderer.java",
+    "src/main/java/com/cheatbreaker/client/ui/element/module/ModulePreviewElement.java"
+  ],
+  "changes": [
+    "Center the scaled 16x16 item at the ring center using a local (-8,-8) origin; remove absolute-position integer truncation and ad hoc offsets.",
+    "Align the 34-pixel circular sample exactly with the card preview center.",
+    "Share item, ring, font, text centering and shadow rendering between the card icon and live/example HUD.",
+    "Disable depth testing and depth writes for the ring and timer overlays so item depth cannot hide the text.",
+    "Restore caller depth state, depth mask, item Z level and item matrix even when item rendering fails.",
+    "Use a cached 16000-ms EnderPearl sample with a fixed 16.0 label; honor the module theme and Colored color in the icon."
+  ],
+  "preview": {
+    "item": "EnderPearl",
+    "item_id": 368,
+    "duration_ms": 16000,
+    "display_text": "16.0",
+    "timer_advances": false,
+    "renderer_instance_reused": true,
+    "live_cooldown_duration_and_decimal_settings_changed": false,
+    "existing_hud_demo_duration_changed": false
+  },
+  "validation": {
+    "build_command": "mvnw.cmd clean package",
+    "build_directory": ".target/maven-source",
+    "build": "BUILD SUCCESS",
+    "java_tests": {
+      "tests": 133,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "recovery_audit": {
+      "checks": 7,
+      "failures": 0,
+      "errors": 0,
+      "passed": true,
+      "meaning": "Recovery audit only; does not assert successful source compilation or runtime equivalence of cleaned source"
+    },
+    "source_jar_constructor_linkage_audit": "passed",
+    "native_audit": {
+      "theme_and_depth_cases": 16,
+      "themes": 4,
+      "item_center_verified": true,
+      "timer_center_verified": true,
+      "timer_text": "16.0",
+      "expired_static_sample_verified": true,
+      "preview_instance_reused": true,
+      "depth_state_restored": true,
+      "exception_cleanup_verified": true,
+      "gl_errors": 0,
+      "preview": ".target/cooldowns-icon-preview.png",
+      "scope": "Actual card, ring and font paths; item rendering uses a 16x16 pearl-texture stand-in with a depth-writing quad."
+    },
+    "native_audit_jar": ".target/maven-source/CheatBreaker1.8.9.jar",
+    "native_audit_source": ".target/tools/CooldownIconAudit.java",
+    "native_audit_log": ".target/cooldowns-icon-native-audit.log",
+    "preview_png": ".target/cooldowns-icon-preview.png",
+    "preview_visually_inspected": true,
+    "visual_result": "Pearl and ring centered; 16.0 visible in Bright, Dark, Colored and No Ring themes. Actual card path shown above the shared live HUD renderer.",
+    "scope": "Offscreen OpenGL with the real card, ring and font paths. Item rendering uses the bundled 16x16 pearl texture in a stand-in that writes depth; full Minecraft item model rendering and gameplay have not been verified in-game.",
+    "build_log": ".target/cooldowns-icon-build.log",
+    "in_game_verified": false
+  },
+  "packaging": "python tools/package_client.py: passed",
+  "deployment_command": "python tools/deploy_neo.py: passed",
+  "source_packaged_deployed_jar_sha256_match": true,
+  "all_native_files_and_hashes_match": true,
+  "native_files_verified": 14,
+  "manifest": {
+    "id": "CheatBreaker 1.8.9",
+    "jar": "CheatBreaker 1.8.9",
+    "clientVersion": "1.8.9"
+  },
+  "deployment": {
+    "version": "CheatBreaker 1.8.9",
+    "directory": "C:\\Users\\hp\\AppData\\Roaming\\.minecraft\\versions\\CheatBreaker 1.8.9",
+    "source_jar": "F:\\Work\\CheatBreaker1.8.9\\.target\\maven-source\\CheatBreaker1.8.9.jar",
+    "jar_sha256": "6837b07c75c791a1f24efee0c2354030f02f80f98b259f583cfb8d655d8c3242",
+    "jar_bytes": 124445994,
+    "compiled_classes": 5150,
+    "native_files_verified": 14,
+    "backup": "F:\\Work\\CheatBreaker1.8.9\\.target\\deployment-backups\\20261019-230536",
+    "deployed_at": "2026-10-19T23:05:37.030342+08:00"
+  }
+}

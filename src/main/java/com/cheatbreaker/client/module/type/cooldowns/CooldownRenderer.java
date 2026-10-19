@@ -32,20 +32,44 @@ public class CooldownRenderer {
    }
 
    public void method_06971(Setting var1, float var2, float var3, int var4) {
+      this.render(var1, var2, var3, var4, this.duration - (System.currentTimeMillis() - this.time), null);
+   }
+
+   public void renderPreview(Setting theme, float x, float y, int color) {
+      this.render(theme, x, y, color, this.duration, "16.0");
+   }
+
+   private void render(Setting theme, float x, float y, int color, double remaining, String previewText) {
+      boolean depthEnabled = GlStateManager.depthState.depthTest.currentState;
+      boolean depthMask = GlStateManager.depthState.maskEnabled;
+      try {
+         this.renderContents(theme, x, y, color, remaining, previewText);
+      } finally {
+         GlStateManager.depthMask(depthMask);
+         GlStateManager.depthState.depthTest.setState(depthEnabled);
+      }
+   }
+
+   private void renderContents(Setting var1, float var2, float var3, int var4, double var8, String previewText) {
       byte var5 = 17;
       GL11.glPushMatrix();
       float var6 = ArmourStatusModule.renderItem.zLevel;
-      ArmourStatusModule.renderItem.zLevel = -150.50002F;
-      float var7 = 1.35F;
-      GL11.glTranslatef(-0.5F, -1.0F, 0.0F);
-      GL11.glScalef(var7, var7, var7);
-      RenderHelper.enableStandardItemLighting();
-      ArmourStatusModule.renderItem.renderItemAndEffectIntoGUI(this.item, (int)((var2 + var5 / 2) / var7), (int)((var3 + var5 / 2) / var7));
-      RenderHelper.disableStandardItemLighting();
-      GlStateManager.disableBlend();
-      GL11.glPopMatrix();
-      ArmourStatusModule.renderItem.zLevel = var6;
-      double var8 = this.duration - (System.currentTimeMillis() - this.time);
+      try {
+         ArmourStatusModule.renderItem.zLevel = -150.50002F;
+         float var7 = 1.35F;
+         GL11.glTranslatef(var2 + var5, var3 + var5, 0.0F);
+         GL11.glScalef(var7, var7, var7);
+         RenderHelper.enableStandardItemLighting();
+         ArmourStatusModule.renderItem.renderItemAndEffectIntoGUI(this.item, -8, -8);
+      } finally {
+         RenderHelper.disableStandardItemLighting();
+         GlStateManager.disableBlend();
+         GL11.glPopMatrix();
+         ArmourStatusModule.renderItem.zLevel = var6;
+      }
+      // The ring and timer are HUD overlays, so item depth must not hide them.
+      GlStateManager.disableDepth();
+      GlStateManager.depthMask(false);
       if (!(var8 <= 0.0)) {
          String var10 = var1.method_08874();
          switch (var10) {
@@ -83,7 +107,8 @@ public class CooldownRenderer {
             case "No Ring":
          }
 
-         var10 = String.format("%." + CheatBreaker.getInstance().getModuleManager().cooldowns.recoveredField653.getValue() + "f", var8 / 1000.0);
+         var10 = previewText != null ? previewText
+            : String.format("%." + CheatBreaker.getInstance().getModuleManager().cooldowns.recoveredField653.getValue() + "f", var8 / 1000.0);
          CheatBreaker.getInstance()
             .recoveredField1589
             .drawStringWithShadow(

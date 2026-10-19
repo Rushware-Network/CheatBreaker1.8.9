@@ -30,6 +30,7 @@ public class ModulePreviewElement extends AbstractModulesGuiElement {
    public ModulesGuiButtonElement recoveredField3799;
    public AbstractModule recoveredField3800;
    public ModulesGuiButtonElement recoveredField3801;
+   private final CooldownRenderer cooldownPreview;
 
    @Override
    public void handleDrawElement(int var1, int var2, float var3) {
@@ -143,9 +144,11 @@ public class ModulePreviewElement extends AbstractModulesGuiElement {
          if (this.recoveredField3800 == CheatBreaker.getInstance().getModuleManager().tabList) {
             this.drawTabListPreview();
          } else if (this.recoveredField3800 == CheatBreaker.getInstance().getModuleManager().cooldowns) {
-            CooldownRenderer var24 = new CooldownRenderer("EnderPearl", 368, 9000L);
-            float var41 = this.x + this.width / 2 - 18;
-            var24.method_06971(CheatBreaker.getInstance().getModuleManager().cooldowns.recoveredField652, var41, this.y + this.height / 2 - 26 - 18, -1);
+            this.cooldownPreview.renderPreview(
+               CheatBreaker.getInstance().getModuleManager().cooldowns.recoveredField652,
+               this.x + this.width / 2.0F - 17.0F, this.y + this.height / 2.0F - 26.0F - 17.0F,
+               CheatBreaker.getInstance().getModuleManager().cooldowns.recoveredField654.method_08901()
+            );
          } else if ((this.recoveredField3800.getPreviewType() == null || this.recoveredField3800.getPreviewType() == AbstractModule.PreviewType.LABEL)
             && this.recoveredField3800 != CheatBreaker.getInstance().getModuleManager().scoreboard
             && this.recoveredField3800 != CheatBreaker.getInstance().getModuleManager().chatModule
@@ -346,6 +349,8 @@ public class ModulePreviewElement extends AbstractModulesGuiElement {
       super(var3);
       recoveredField3798 = this;
       this.recoveredField3800 = var2;
+      this.cooldownPreview = var2 == CheatBreaker.getInstance().getModuleManager().cooldowns
+         ? new CooldownRenderer("EnderPearl", 368, 16000L) : null;
       if (var2 == CheatBreaker.getInstance().getModuleManager().barrierBlock) {
          BarrierBlockPreview.prepare();
          var2.setPreviewIcon(BarrierBlockPreview.ICON, 32, 32);
